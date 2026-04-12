@@ -10,6 +10,7 @@
   "matched_occupations": 376,
   "observed_occupations": 397,
   "unmatched_occupations": 21,
+  "internet_workers": 754275.3844304683,
   "income_outliers_over_20k": 1,
   "income_outliers_over_50k": 0
 }

@@ -21,6 +21,13 @@ def run(cmd: list[str], cwd: Path) -> None:
     subprocess.run(cmd, cwd=cwd, check=True)
 
 
+def resolve_existing_path(*candidates: Path) -> Path:
+    for candidate in candidates:
+        if candidate.exists():
+            return candidate
+    return candidates[0]
+
+
 def main() -> None:
     args = parse_args()
     project_root = args.project_root.resolve()
@@ -28,7 +35,10 @@ def main() -> None:
     generator = project_root / "scripts" / "build_enaho_exposure_notebook.py"
     notebooks_dir = project_root / "notebooks" / "enaho_exposure"
     html_dir = project_root / "outputs" / "html" / "enaho_exposure"
-    base_dir = project_root / "data" / "intermediate" / "enaho_complete_years"
+    base_dir = resolve_existing_path(
+        project_root / "bases" / "intermedias" / "enaho_complete_years",
+        project_root / "data" / "intermediate" / "enaho_complete_years",
+    )
 
     notebooks_dir.mkdir(parents=True, exist_ok=True)
     html_dir.mkdir(parents=True, exist_ok=True)

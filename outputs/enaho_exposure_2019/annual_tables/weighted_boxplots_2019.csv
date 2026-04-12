@@ -1,0 +1,145 @@
+dimension,dimension_label,group,metric,metric_label,weighted_population,p05,p25,p50,p75,p95
+sex_label,Sexo,hombre,mean_exposure_score,Exposición media,9264594.25542498,0.05,0.1,0.2375,0.3167,0.6007
+sex_label,Sexo,hombre,%_media_alta_exp,% media/alta exposición,9264594.25542498,0.0,0.0,0.1667,0.3333,1.0
+sex_label,Sexo,hombre,%_aumento,% aumento,9264594.25542498,0.0,0.0,0.1667,0.3333,1.0
+sex_label,Sexo,hombre,%_sustitucion,% sustitución,9264594.25542498,0.0,0.0,0.0,0.0,0.0
+sex_label,Sexo,mujer,mean_exposure_score,Exposición media,7381136.520055296,0.05,0.0625,0.2667,0.4375,0.6
+sex_label,Sexo,mujer,%_media_alta_exp,% media/alta exposición,7381136.520055296,0.0,0.0,0.25,0.6667,1.0
+sex_label,Sexo,mujer,%_aumento,% aumento,7381136.520055296,0.0,0.0,0.25,0.6,1.0
+sex_label,Sexo,mujer,%_sustitucion,% sustitución,7381136.520055296,0.0,0.0,0.0,0.0,0.0
+education_label_base,Educación,Sin dato,mean_exposure_score,Exposición media,4063.702468872074,0.05135960985132324,0.07646733237746234,0.1692013530564826,0.4148502473460364,0.5993
+education_label_base,Educación,Sin dato,%_media_alta_exp,% media/alta exposición,4063.702468872074,0.0,0.0,0.0,0.4834631554426013,1.0
+education_label_base,Educación,Sin dato,%_aumento,% aumento,4063.702468872074,0.0,0.0,0.0,0.4834631554426013,1.0
+education_label_base,Educación,Sin dato,%_sustitucion,% sustitución,4063.702468872074,0.0,0.0,0.0,0.0,0.0
+education_label_base,Educación,básica especial,mean_exposure_score,Exposición media,3979.9504823684692,0.05,0.05,0.05,0.09589729978034636,0.2888112866843111
+education_label_base,Educación,básica especial,%_media_alta_exp,% media/alta exposición,3979.9504823684692,0.0,0.0,0.0,0.0,0.25
+education_label_base,Educación,básica especial,%_aumento,% aumento,3979.9504823684692,0.0,0.0,0.0,0.0,0.25
+education_label_base,Educación,básica especial,%_sustitucion,% sustitución,3979.9504823684692,0.0,0.0,0.0,0.0,0.0
+education_label_base,Educación,educación inicial,mean_exposure_score,Exposición media,4757.437313079833,0.05,0.08969494480887434,0.2639,0.3050676255569618,0.6359587045520702
+education_label_base,Educación,educación inicial,%_media_alta_exp,% media/alta exposición,4757.437313079833,0.0,0.0,0.0,0.25,1.0
+education_label_base,Educación,educación inicial,%_aumento,% aumento,4757.437313079833,0.0,0.0,0.0,0.25,0.691646092018555
+education_label_base,Educación,educación inicial,%_sustitucion,% sustitución,4757.437313079833,0.0,0.0,0.0,0.0,0.12520049368876365
+education_label_base,Educación,maestría/doctorado,mean_exposure_score,Exposición media,331779.3599326611,0.29970877496492065,0.4111,0.4792,0.5692,0.6725
+education_label_base,Educación,maestría/doctorado,%_media_alta_exp,% media/alta exposición,331779.3599326611,0.2222,0.5,0.6667,1.0,1.0
+education_label_base,Educación,maestría/doctorado,%_aumento,% aumento,331779.3599326611,0.2222,0.5556,0.75,1.0,1.0
+education_label_base,Educación,maestría/doctorado,%_sustitucion,% sustitución,331779.3599326611,0.0,0.0,0.0,0.0,0.25
+education_label_base,Educación,primaria completa,mean_exposure_score,Exposición media,1784185.0795636182,0.05,0.05,0.225,0.2639,0.5993
+education_label_base,Educación,primaria completa,%_media_alta_exp,% media/alta exposición,1784185.0795636182,0.0,0.0,0.1429,0.25,1.0
+education_label_base,Educación,primaria completa,%_aumento,% aumento,1784185.0795636182,0.0,0.0,0.1429,0.25,1.0
+education_label_base,Educación,primaria completa,%_sustitucion,% sustitución,1784185.0795636182,0.0,0.0,0.0,0.0,0.0
+education_label_base,Educación,primaria incompleta,mean_exposure_score,Exposición media,1812163.9663467412,0.05,0.05,0.2639,0.2639,0.5993
+education_label_base,Educación,primaria incompleta,%_media_alta_exp,% media/alta exposición,1812163.9663467412,0.0,0.0,0.1667,0.25,1.0
+education_label_base,Educación,primaria incompleta,%_aumento,% aumento,1812163.9663467412,0.0,0.0,0.1667,0.25,1.0
+education_label_base,Educación,primaria incompleta,%_sustitucion,% sustitución,1812163.9663467412,0.0,0.0,0.0,0.0,0.0
+education_label_base,Educación,secundaria completa,mean_exposure_score,Exposición media,4823725.606958153,0.05,0.07,0.2,0.3167,0.5993
+education_label_base,Educación,secundaria completa,%_media_alta_exp,% media/alta exposición,4823725.606958153,0.0,0.0,0.0,0.3333,1.0
+education_label_base,Educación,secundaria completa,%_aumento,% aumento,4823725.606958153,0.0,0.0,0.0,0.3333,1.0
+education_label_base,Educación,secundaria completa,%_sustitucion,% sustitución,4823725.606958153,0.0,0.0,0.0,0.0,0.0
+education_label_base,Educación,secundaria incompleta,mean_exposure_score,Exposición media,2354102.5308158407,0.05,0.05,0.1533,0.2722,0.5993
+education_label_base,Educación,secundaria incompleta,%_media_alta_exp,% media/alta exposición,2354102.5308158407,0.0,0.0,0.0,0.25,1.0
+education_label_base,Educación,secundaria incompleta,%_aumento,% aumento,2354102.5308158407,0.0,0.0,0.0,0.25,1.0
+education_label_base,Educación,secundaria incompleta,%_sustitucion,% sustitución,2354102.5308158407,0.0,0.0,0.0,0.0,0.0
+education_label_base,Educación,sin nivel,mean_exposure_score,Exposición media,542292.3384118081,0.05,0.05,0.2,0.2639,0.5993
+education_label_base,Educación,sin nivel,%_media_alta_exp,% media/alta exposición,542292.3384118081,0.0,0.0,0.0,0.25,1.0
+education_label_base,Educación,sin nivel,%_aumento,% aumento,542292.3384118081,0.0,0.0,0.0,0.25,1.0
+education_label_base,Educación,sin nivel,%_sustitucion,% sustitución,542292.3384118081,0.0,0.0,0.0,0.0,0.0
+education_label_base,Educación,superior no universitaria completa,mean_exposure_score,Exposición media,1683976.1279113297,0.05,0.1958,0.33,0.5,0.6333
+education_label_base,Educación,superior no universitaria completa,%_media_alta_exp,% media/alta exposición,1683976.1279113297,0.0,0.0,0.3333,0.8,1.0
+education_label_base,Educación,superior no universitaria completa,%_aumento,% aumento,1683976.1279113297,0.0,0.0,0.3333,0.75,1.0
+education_label_base,Educación,superior no universitaria completa,%_sustitucion,% sustitución,1683976.1279113297,0.0,0.0,0.0,0.0,0.2
+education_label_base,Educación,superior no universitaria incompleta,mean_exposure_score,Exposición media,841826.0234148505,0.05,0.1167,0.2375,0.4344,0.6323064422133137
+education_label_base,Educación,superior no universitaria incompleta,%_media_alta_exp,% media/alta exposición,841826.0234148505,0.0,0.0,0.25,0.5,1.0
+education_label_base,Educación,superior no universitaria incompleta,%_aumento,% aumento,841826.0234148505,0.0,0.0,0.25,0.5,1.0
+education_label_base,Educación,superior no universitaria incompleta,%_sustitucion,% sustitución,841826.0234148505,0.0,0.0,0.0,0.0,0.0
+education_label_base,Educación,superior universitaria completa,mean_exposure_score,Exposición media,1473022.5741593842,0.15,0.3375,0.4792,0.5993,0.6725
+education_label_base,Educación,superior universitaria completa,%_media_alta_exp,% media/alta exposición,1473022.5741593842,0.0,0.3333,0.6667,1.0,1.0
+education_label_base,Educación,superior universitaria completa,%_aumento,% aumento,1473022.5741593842,0.0,0.4,0.75,1.0,1.0
+education_label_base,Educación,superior universitaria completa,%_sustitucion,% sustitución,1473022.5741593842,0.0,0.0,0.0,0.0,0.25
+education_label_base,Educación,superior universitaria incompleta,mean_exposure_score,Exposición media,985856.077701569,0.05,0.1958,0.3315,0.5723378132174565,0.6725
+education_label_base,Educación,superior universitaria incompleta,%_media_alta_exp,% media/alta exposición,985856.077701569,0.0,0.0,0.4,0.8333,1.0
+education_label_base,Educación,superior universitaria incompleta,%_aumento,% aumento,985856.077701569,0.0,0.0,0.4,0.75,1.0
+education_label_base,Educación,superior universitaria incompleta,%_sustitucion,% sustitución,985856.077701569,0.0,0.0,0.0,0.0,0.2
+category_group_label,Categoría agregada,Asalariado,mean_exposure_score,Exposición media,7454439.778174403,0.05,0.05,0.2333,0.4375,0.6333
+category_group_label,Categoría agregada,Asalariado,%_media_alta_exp,% media/alta exposición,7454439.778174403,0.0,0.0,0.2222,0.6,1.0
+category_group_label,Categoría agregada,Asalariado,%_aumento,% aumento,7454439.778174403,0.0,0.0,0.2222,0.6,1.0
+category_group_label,Categoría agregada,Asalariado,%_sustitucion,% sustitución,7454439.778174403,0.0,0.0,0.0,0.0,0.0
+category_group_label,Categoría agregada,Empleador / dueño,mean_exposure_score,Exposición media,675083.3483116629,0.0667,0.225,0.3167,0.5993,0.6725
+category_group_label,Categoría agregada,Empleador / dueño,%_media_alta_exp,% media/alta exposición,675083.3483116629,0.0,0.1667,0.3333,1.0,1.0
+category_group_label,Categoría agregada,Empleador / dueño,%_aumento,% aumento,675083.3483116629,0.0,0.1667,0.3333,0.75,1.0
+category_group_label,Categoría agregada,Empleador / dueño,%_sustitucion,% sustitución,675083.3483116629,0.0,0.0,0.0,0.0,0.25
+category_group_label,Categoría agregada,Familiar no remunerado,mean_exposure_score,Exposición media,1736807.2195775514,0.05,0.05,0.05,0.1358,0.5993
+category_group_label,Categoría agregada,Familiar no remunerado,%_media_alta_exp,% media/alta exposición,1736807.2195775514,0.0,0.0,0.0,0.0,1.0
+category_group_label,Categoría agregada,Familiar no remunerado,%_aumento,% aumento,1736807.2195775514,0.0,0.0,0.0,0.0,1.0
+category_group_label,Categoría agregada,Familiar no remunerado,%_sustitucion,% sustitución,1736807.2195775514,0.0,0.0,0.0,0.0,0.0
+category_group_label,Categoría agregada,Otro,mean_exposure_score,Exposición media,31430.063108444225,0.05,0.05,0.16631970969689974,0.5993,0.5993
+category_group_label,Categoría agregada,Otro,%_media_alta_exp,% media/alta exposición,31430.063108444225,0.0,0.0,0.0,1.0,1.0
+category_group_label,Categoría agregada,Otro,%_aumento,% aumento,31430.063108444225,0.0,0.0,0.0,1.0,1.0
+category_group_label,Categoría agregada,Otro,%_sustitucion,% sustitución,31430.063108444225,0.0,0.0,0.0,0.0,0.0
+category_group_label,Categoría agregada,Trabajador del hogar,mean_exposure_score,Exposición media,427289.0387642385,0.0625,0.0625,0.0625,0.0625,0.0625
+category_group_label,Categoría agregada,Trabajador del hogar,%_media_alta_exp,% media/alta exposición,427289.0387642385,0.0,0.0,0.0,0.0,0.0
+category_group_label,Categoría agregada,Trabajador del hogar,%_aumento,% aumento,427289.0387642385,0.0,0.0,0.0,0.0,0.0
+category_group_label,Categoría agregada,Trabajador del hogar,%_sustitucion,% sustitución,427289.0387642385,0.0,0.0,0.0,0.0,0.0
+category_group_label,Categoría agregada,trabajador independiente,mean_exposure_score,Exposición media,6320681.327543976,0.08,0.1875,0.2639,0.3167,0.5993
+category_group_label,Categoría agregada,trabajador independiente,%_media_alta_exp,% media/alta exposición,6320681.327543976,0.0,0.0,0.1667,0.3333,1.0
+category_group_label,Categoría agregada,trabajador independiente,%_aumento,% aumento,6320681.327543976,0.0,0.0,0.1667,0.3333,1.0
+category_group_label,Categoría agregada,trabajador independiente,%_sustitucion,% sustitución,6320681.327543976,0.0,0.0,0.0,0.0,0.0
+rama_label,Rama de actividad,Agri/Silvi/Pesca,mean_exposure_score,Exposición media,4182011.497620106,0.05,0.05,0.1533,0.2639,0.275
+rama_label,Rama de actividad,Agri/Silvi/Pesca,%_media_alta_exp,% media/alta exposición,4182011.497620106,0.0,0.0,0.0,0.1667,0.2857
+rama_label,Rama de actividad,Agri/Silvi/Pesca,%_aumento,% aumento,4182011.497620106,0.0,0.0,0.0,0.1667,0.2857
+rama_label,Rama de actividad,Agri/Silvi/Pesca,%_sustitucion,% sustitución,4182011.497620106,0.0,0.0,0.0,0.0,0.0
+rama_label,Rama de actividad,Comercio,mean_exposure_score,Exposición media,3252727.4404115686,0.1,0.2375,0.5,0.5993,0.5993
+rama_label,Rama de actividad,Comercio,%_media_alta_exp,% media/alta exposición,3252727.4404115686,0.0,0.25,0.75,1.0,1.0
+rama_label,Rama de actividad,Comercio,%_aumento,% aumento,3252727.4404115686,0.0,0.25,0.75,1.0,1.0
+rama_label,Rama de actividad,Comercio,%_sustitucion,% sustitución,3252727.4404115686,0.0,0.0,0.0,0.0,0.0
+rama_label,Rama de actividad,Construcción,mean_exposure_score,Exposición media,1042623.4962542065,0.05,0.05,0.0667,0.1292,0.4952
+rama_label,Rama de actividad,Construcción,%_media_alta_exp,% media/alta exposición,1042623.4962542065,0.0,0.0,0.0,0.0,0.8
+rama_label,Rama de actividad,Construcción,%_aumento,% aumento,1042623.4962542065,0.0,0.0,0.0,0.0,0.75
+rama_label,Rama de actividad,Construcción,%_sustitucion,% sustitución,1042623.4962542065,0.0,0.0,0.0,0.0,0.0
+rama_label,Rama de actividad,Manufactura,mean_exposure_score,Exposición media,1413384.911280633,0.05,0.1125,0.2,0.2667,0.6007
+rama_label,Rama de actividad,Manufactura,%_media_alta_exp,% media/alta exposición,1413384.911280633,0.0,0.0,0.0,0.3333,1.0
+rama_label,Rama de actividad,Manufactura,%_aumento,% aumento,1413384.911280633,0.0,0.0,0.0,0.3333,0.978276229511435
+rama_label,Rama de actividad,Manufactura,%_sustitucion,% sustitución,1413384.911280633,0.0,0.0,0.0,0.0,0.0
+rama_label,Rama de actividad,Minería,mean_exposure_score,Exposición media,183131.82924890524,0.07,0.07,0.1452,0.2375,0.5938311832158861
+rama_label,Rama de actividad,Minería,%_media_alta_exp,% media/alta exposición,183131.82924890524,0.0,0.0,0.0,0.1429,1.0
+rama_label,Rama de actividad,Minería,%_aumento,% aumento,183131.82924890524,0.0,0.0,0.0,0.1429,1.0
+rama_label,Rama de actividad,Minería,%_sustitucion,% sustitución,183131.82924890524,0.0,0.0,0.0,0.0,0.0
+rama_label,Rama de actividad,Servicios/Otros,mean_exposure_score,Exposición media,6571851.600664856,0.05,0.1167,0.2722,0.436,0.6713
+rama_label,Rama de actividad,Servicios/Otros,%_media_alta_exp,% media/alta exposición,6571851.600664856,0.0,0.0,0.25,0.6,1.0
+rama_label,Rama de actividad,Servicios/Otros,%_aumento,% aumento,6571851.600664856,0.0,0.0,0.25,0.6,1.0
+rama_label,Rama de actividad,Servicios/Otros,%_sustitucion,% sustitución,6571851.600664856,0.0,0.0,0.0,0.0,0.2
+firm_size_label,Tamaño de empresa,<20 pp,mean_exposure_score,Exposición media,12981643.837308887,0.05,0.0625,0.2375,0.3167,0.5993
+firm_size_label,Tamaño de empresa,<20 pp,%_media_alta_exp,% media/alta exposición,12981643.837308887,0.0,0.0,0.1667,0.3333,1.0
+firm_size_label,Tamaño de empresa,<20 pp,%_aumento,% aumento,12981643.837308887,0.0,0.0,0.1667,0.3333,1.0
+firm_size_label,Tamaño de empresa,<20 pp,%_sustitucion,% sustitución,12981643.837308887,0.0,0.0,0.0,0.0,0.0
+firm_size_label,Tamaño de empresa,>500,mean_exposure_score,Exposición media,2118201.381177188,0.05,0.2,0.3718,0.4926,0.6713
+firm_size_label,Tamaño de empresa,>500,%_media_alta_exp,% media/alta exposición,2118201.381177188,0.0,0.0,0.4,0.75,1.0
+firm_size_label,Tamaño de empresa,>500,%_aumento,% aumento,2118201.381177188,0.0,0.0,0.5,0.75,1.0
+firm_size_label,Tamaño de empresa,>500,%_sustitucion,% sustitución,2118201.381177188,0.0,0.0,0.0,0.0,0.2
+firm_size_label,Tamaño de empresa,Sin dato,mean_exposure_score,Exposición media,5373.47357559204,0.1333,0.17379651185222628,0.29333848814861596,0.3944,0.5439913297803933
+firm_size_label,Tamaño de empresa,Sin dato,%_media_alta_exp,% media/alta exposición,5373.47357559204,0.0,0.0,0.25,0.6667,1.0
+firm_size_label,Tamaño de empresa,Sin dato,%_aumento,% aumento,5373.47357559204,0.0,0.0,0.25,0.6667,1.0
+firm_size_label,Tamaño de empresa,Sin dato,%_sustitucion,% sustitución,5373.47357559204,0.0,0.0,0.0,0.0,0.0
+firm_size_label,Tamaño de empresa,de 101 a 500,mean_exposure_score,Exposición media,608009.0415036681,0.05,0.1,0.2667,0.5,0.6725
+firm_size_label,Tamaño de empresa,de 101 a 500,%_media_alta_exp,% media/alta exposición,608009.0415036681,0.0,0.0,0.25,0.8,1.0
+firm_size_label,Tamaño de empresa,de 101 a 500,%_aumento,% aumento,608009.0415036681,0.0,0.0,0.25,0.75,1.0
+firm_size_label,Tamaño de empresa,de 101 a 500,%_sustitucion,% sustitución,608009.0415036681,0.0,0.0,0.0,0.0,0.2
+firm_size_label,Tamaño de empresa,de 21 a 50,mean_exposure_score,Exposición media,560352.7258427145,0.05,0.07862571184357758,0.2667,0.4783,0.6333
+firm_size_label,Tamaño de empresa,de 21 a 50,%_media_alta_exp,% media/alta exposición,560352.7258427145,0.0,0.0,0.25,0.6667,1.0
+firm_size_label,Tamaño de empresa,de 21 a 50,%_aumento,% aumento,560352.7258427145,0.0,0.0,0.25,0.6667,1.0
+firm_size_label,Tamaño de empresa,de 21 a 50,%_sustitucion,% sustitución,560352.7258427145,0.0,0.0,0.0,0.0,0.0
+firm_size_label,Tamaño de empresa,de 51 a 100,mean_exposure_score,Exposición media,372150.3160722257,0.05,0.1,0.3,0.5,0.6713
+firm_size_label,Tamaño de empresa,de 51 a 100,%_media_alta_exp,% media/alta exposición,372150.3160722257,0.0,0.0,0.25,0.75,1.0
+firm_size_label,Tamaño de empresa,de 51 a 100,%_aumento,% aumento,372150.3160722257,0.0,0.0,0.25,0.75,1.0
+firm_size_label,Tamaño de empresa,de 51 a 100,%_sustitucion,% sustitución,372150.3160722257,0.0,0.0,0.0,0.0,0.0
+internet_use_label,Uso de internet en el trabajo,no usa internet en el trabajo,mean_exposure_score,Exposición media,8144468.097238544,0.05,0.1,0.2375,0.436,0.6007
+internet_use_label,Uso de internet en el trabajo,no usa internet en el trabajo,%_media_alta_exp,% media/alta exposición,8144468.097238544,0.0,0.0,0.2222,0.5556,1.0
+internet_use_label,Uso de internet en el trabajo,no usa internet en el trabajo,%_aumento,% aumento,8144468.097238544,0.0,0.0,0.2222,0.6,1.0
+internet_use_label,Uso de internet en el trabajo,no usa internet en el trabajo,%_sustitucion,% sustitución,8144468.097238544,0.0,0.0,0.0,0.0,0.0
+internet_use_label,Uso de internet en el trabajo,sin dato,mean_exposure_score,Exposición media,6998663.0343740005,0.05,0.05,0.2042,0.2667,0.5993
+internet_use_label,Uso de internet en el trabajo,sin dato,%_media_alta_exp,% media/alta exposición,6998663.0343740005,0.0,0.0,0.0,0.25,1.0
+internet_use_label,Uso de internet en el trabajo,sin dato,%_aumento,% aumento,6998663.0343740005,0.0,0.0,0.0,0.25,1.0
+internet_use_label,Uso de internet en el trabajo,sin dato,%_sustitucion,% sustitución,6998663.0343740005,0.0,0.0,0.0,0.0,0.0
+internet_use_label,Uso de internet en el trabajo,usa internet en el trabajo,mean_exposure_score,Exposición media,1502599.6438677316,0.1583,0.4067,0.4994,0.6007,0.6967
+internet_use_label,Uso de internet en el trabajo,usa internet en el trabajo,%_media_alta_exp,% media/alta exposición,1502599.6438677316,0.0,0.5,0.75,1.0,1.0
+internet_use_label,Uso de internet en el trabajo,usa internet en el trabajo,%_aumento,% aumento,1502599.6438677316,0.0,0.5,0.75,1.0,1.0
+internet_use_label,Uso de internet en el trabajo,usa internet en el trabajo,%_sustitucion,% sustitución,1502599.6438677316,0.0,0.0,0.0,0.0,0.25

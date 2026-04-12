@@ -1,0 +1,7 @@
+dimension,groups_tested,n,statistic,p_value
+Sexo,2,55173,15.016729912183772,0.00010656229202388316
+Educación,11,55144,10582.000636143131,0.0
+Categoría agregada,6,55173,12668.401450591924,0.0
+Rama de actividad,6,55173,16619.543701872335,0.0
+Uso de internet en el trabajo,3,55173,3326.4998288768993,0.0
+Frecuencia de internet en el trabajo,3,55171,2281.5128915753694,0.0

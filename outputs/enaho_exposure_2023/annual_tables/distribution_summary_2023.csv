@@ -1,0 +1,6 @@
+metric,metric_label,mean_weighted,p10,p25,p50,p75,p90
+mean_exposure_score,Exposición media,0.2683340343151699,0.05,0.08,0.2639,0.39,0.5993
+%_media_alta_exp,% media/alta exposición,0.29283780519905755,0.0,0.0,0.1667,0.5,1.0
+%_alta_exposicion,% alta exposición,0.14713128358735464,0.0,0.0,0.0,0.2222,0.6
+%_aumento,% aumento,0.2895700295075247,0.0,0.0,0.1667,0.5,1.0
+%_sustitucion,% sustitución,0.007651448339714688,0.0,0.0,0.0,0.0,0.0

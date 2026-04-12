@@ -1,0 +1,327 @@
+region_code,occupation_code_4d,occupation_group,workers,mean_exposure
+1,5212,Vendedores minoristas en tiendas y establecimientos (excepto kioscos y mercados),11163.83544576168,0.5993
+1,6111,Agricultores y trabajadores calificados de cultivos extensivos,18148.368378281593,0.2639
+1,6112,Agricultores y trabajadores calificados de plantaciones de árboles y arbustos,15611.767203569412,0.2904999999999999
+1,6114,"Agricultores y trabajadores calificados de cultivos mixtos (Agrícolas, pecuarios y forestales)",14269.644657254219,0.2639
+1,6122,Avicultores y trabajadores calificados de la avicultura,16025.671914100647,0.33329999999999993
+1,9211,Peones de explotaciones agrícolas y ganaderas,56036.97023296356,0.049999999999999996
+2,5120,Cocineros,19042.334882736206,0.32999999999999996
+2,5212,Vendedores minoristas en tiendas y establecimientos (excepto kioscos y mercados),34592.31639790535,0.5993
+2,6111,Agricultores y trabajadores calificados de cultivos extensivos,36895.20299863815,0.2639
+2,6114,"Agricultores y trabajadores calificados de cultivos mixtos (Agrícolas, pecuarios y forestales)",47658.74352860451,0.2639
+2,6121,Criadores y trabajadores calificados de ganado,19224.412304639816,0.275
+2,8322,"Conductores de automóviles, taxis y camionetas",15853.747295379639,0.1583
+2,9211,Peones de explotaciones agrícolas y ganaderas,127006.4368956089,0.049999999999999996
+2,9313,Peones de la construcción de edificios,22032.078946590424,0.05000000000000001
+3,5212,Vendedores minoristas en tiendas y establecimientos (excepto kioscos y mercados),13185.74857544899,0.5993
+3,6114,"Agricultores y trabajadores calificados de cultivos mixtos (Agrícolas, pecuarios y forestales)",51299.8520424366,0.2639
+3,9211,Peones de explotaciones agrícolas y ganaderas,54116.170392513275,0.05
+3,9313,Peones de la construcción de edificios,10100.01950597763,0.05000000000000001
+4,3314,Técnicos en administración,16968.443298339844,0.6725
+4,4417,"Auxiliares en la administración, contabilidad, derecho y afines",14511.498258590698,0.6007
+4,5120,Cocineros,16897.936346054077,0.33
+4,5211,Vendedores mayoristas,15339.621032714844,0.5
+4,5212,Vendedores minoristas en tiendas y establecimientos (excepto kioscos y mercados),57017.25902605057,0.5993
+4,5213,Vendedores en kiosco fijo y puestos de mercado,13439.143045425415,0.3167
+4,5223,Asistentes de venta en tiendas y almacenes,10794.721235275269,0.45
+4,6114,"Agricultores y trabajadores calificados de cultivos mixtos (Agrícolas, pecuarios y forestales)",11328.082527160645,0.2639
+4,7111,Albañiles y constructores de casas y grandes obras civiles,11709.139251708984,0.10000000000000002
+4,8322,"Conductores de automóviles, taxis y camionetas",30804.66436100006,0.15829999999999997
+4,8331,Conductores de autobuses y tranvías,11311.893968582153,0.0783
+4,8332,Conductores de camiones pesados,15956.440795898438,0.23330000000000004
+4,9111,Limpiadores y asistentes domésticos,14769.655492782593,0.0625
+4,9211,Peones de explotaciones agrícolas y ganaderas,60813.07719039917,0.05000000000000001
+4,9313,Peones de la construcción de edificios,37578.531549453735,0.049999999999999996
+4,9412,Ayudantes de cocina,10833.086526870728,0.049999999999999996
+4,9629,Otras ocupaciones elementales,10450.605087280273,0.2667
+5,5212,Vendedores minoristas en tiendas y establecimientos (excepto kioscos y mercados),19909.93215560913,0.5993000000000002
+5,6111,Agricultores y trabajadores calificados de cultivos extensivos,20430.718635559082,0.2639
+5,6114,"Agricultores y trabajadores calificados de cultivos mixtos (Agrícolas, pecuarios y forestales)",39185.374022483826,0.2639
+5,9211,Peones de explotaciones agrícolas y ganaderas,83432.53270626068,0.05
+5,9313,Peones de la construcción de edificios,15013.756080627441,0.049999999999999996
+6,2341,Profesores de enseñanza primaria,10598.461392879486,0.33149999999999996
+6,5212,Vendedores minoristas en tiendas y establecimientos (excepto kioscos y mercados),35142.48878574371,0.5993000000000002
+6,5223,Asistentes de venta en tiendas y almacenes,12514.08145904541,0.45
+6,6111,Agricultores y trabajadores calificados de cultivos extensivos,51616.43469810486,0.2639
+6,6112,Agricultores y trabajadores calificados de plantaciones de árboles y arbustos,19894.50226211548,0.2904999999999999
+6,6114,"Agricultores y trabajadores calificados de cultivos mixtos (Agrícolas, pecuarios y forestales)",97370.10201644897,0.2639
+6,6121,Criadores y trabajadores calificados de ganado,75330.9222650528,0.275
+6,6122,Avicultores y trabajadores calificados de la avicultura,39795.89589691162,0.3333
+6,7352,"Sastres, modistos, costureros y sombrereros",10518.08072757721,0.22500000000000003
+6,7513,"Panaderos, pasteleros y confiteros",11689.647813796997,0.1358
+6,8321,Conductores de motocicletas,17785.965894699097,0.2722
+6,9211,Peones de explotaciones agrícolas y ganaderas,193885.86180114746,0.05
+6,9313,Peones de la construcción de edificios,28947.8691072464,0.049999999999999996
+8,3314,Técnicos en administración,11190.958622932434,0.6725000000000001
+8,4417,"Auxiliares en la administración, contabilidad, derecho y afines",10672.937236785889,0.6007
+8,5120,Cocineros,11920.696160316467,0.33
+8,5212,Vendedores minoristas en tiendas y establecimientos (excepto kioscos y mercados),40390.903202056885,0.5993
+8,5213,Vendedores en kiosco fijo y puestos de mercado,10019.505193710327,0.3167
+8,5223,Asistentes de venta en tiendas y almacenes,17290.5523853302,0.45000000000000007
+8,6111,Agricultores y trabajadores calificados de cultivos extensivos,11173.11364364624,0.2639000000000001
+8,6114,"Agricultores y trabajadores calificados de cultivos mixtos (Agrícolas, pecuarios y forestales)",126832.71601867676,0.2639
+8,6121,Criadores y trabajadores calificados de ganado,13364.682275772095,0.275
+8,7513,"Panaderos, pasteleros y confiteros",10563.594310760498,0.1358
+8,8322,"Conductores de automóviles, taxis y camionetas",18415.193243026733,0.1583
+8,9211,Peones de explotaciones agrícolas y ganaderas,140578.34119606018,0.05
+8,9312,Peones de obras públicas y mantenimiento,12957.867541313171,0.05000000000000001
+8,9313,Peones de la construcción de edificios,30733.434997558594,0.05
+8,9411,Cocineros de comidas preparadas en la calle,12434.112009048462,0.08
+8,9412,Ayudantes de cocina,14999.314199447632,0.049999999999999996
+9,6111,Agricultores y trabajadores calificados de cultivos extensivos,21985.111921310425,0.2639
+9,6114,"Agricultores y trabajadores calificados de cultivos mixtos (Agrícolas, pecuarios y forestales)",31924.319286346436,0.2639
+9,6121,Criadores y trabajadores calificados de ganado,16488.222376346588,0.275
+9,9211,Peones de explotaciones agrícolas y ganaderas,52729.032814741135,0.049999999999999996
+10,5212,Vendedores minoristas en tiendas y establecimientos (excepto kioscos y mercados),24810.46191215515,0.5993
+10,6111,Agricultores y trabajadores calificados de cultivos extensivos,24824.412165641785,0.2639
+10,6114,"Agricultores y trabajadores calificados de cultivos mixtos (Agrícolas, pecuarios y forestales)",36333.40054321289,0.2639
+10,6121,Criadores y trabajadores calificados de ganado,16300.133819580078,0.275
+10,8321,Conductores de motocicletas,10936.431196212769,0.27220000000000005
+10,9211,Peones de explotaciones agrícolas y ganaderas,77955.4234752655,0.05
+10,9313,Peones de la construcción de edificios,16768.091205596924,0.05
+11,3314,Técnicos en administración,10831.010518074036,0.6725
+11,5120,Cocineros,11367.792603492737,0.33
+11,5212,Vendedores minoristas en tiendas y establecimientos (excepto kioscos y mercados),34236.81205368042,0.5993000000000002
+11,8321,Conductores de motocicletas,19924.735578536987,0.2722
+11,8322,"Conductores de automóviles, taxis y camionetas",19681.668332099915,0.1583
+11,9211,Peones de explotaciones agrícolas y ganaderas,64927.73484802246,0.05
+11,9313,Peones de la construcción de edificios,24500.473342895508,0.05000000000000001
+12,3314,Técnicos en administración,11000.207111358643,0.6725
+12,4417,"Auxiliares en la administración, contabilidad, derecho y afines",11539.970142364502,0.6007
+12,5120,Cocineros,20825.00170326233,0.33000000000000007
+12,5212,Vendedores minoristas en tiendas y establecimientos (excepto kioscos y mercados),43486.4108581543,0.5993
+12,5223,Asistentes de venta en tiendas y almacenes,17822.66579055786,0.45
+12,6111,Agricultores y trabajadores calificados de cultivos extensivos,25687.100450515747,0.2639
+12,6112,Agricultores y trabajadores calificados de plantaciones de árboles y arbustos,28659.459032058716,0.2904999999999999
+12,6114,"Agricultores y trabajadores calificados de cultivos mixtos (Agrícolas, pecuarios y forestales)",23066.60199356079,0.2639
+12,6121,Criadores y trabajadores calificados de ganado,15419.763744354248,0.27499999999999997
+12,8321,Conductores de motocicletas,11274.633373260498,0.27219999999999994
+12,8322,"Conductores de automóviles, taxis y camionetas",21506.95379447937,0.1583
+12,9211,Peones de explotaciones agrícolas y ganaderas,116758.32035446167,0.049999999999999996
+12,9313,Peones de la construcción de edificios,24355.819570541382,0.049999999999999996
+12,9411,Cocineros de comidas preparadas en la calle,10655.020643234253,0.08
+12,9412,Ayudantes de cocina,14256.74754524231,0.05
+13,2330,Profesores de enseñanza secundaria,14998.196594238281,0.43599999999999994
+13,2341,Profesores de enseñanza primaria,11154.739166259766,0.3315
+13,3314,Técnicos en administración,22036.559272766113,0.6725
+13,4417,"Auxiliares en la administración, contabilidad, derecho y afines",24120.998025894165,0.6007
+13,5120,Cocineros,30120.37001991272,0.32999999999999996
+13,5131,Camareros de mesas,11432.123062133789,0.2067
+13,5211,Vendedores mayoristas,15396.167495727539,0.5
+13,5212,Vendedores minoristas en tiendas y establecimientos (excepto kioscos y mercados),69172.23066711426,0.5992999999999999
+13,5213,Vendedores en kiosco fijo y puestos de mercado,15188.9372215271,0.31670000000000004
+13,5223,Asistentes de venta en tiendas y almacenes,22170.830757141113,0.45000000000000007
+13,6111,Agricultores y trabajadores calificados de cultivos extensivos,60075.63587188721,0.2639
+13,6114,"Agricultores y trabajadores calificados de cultivos mixtos (Agrícolas, pecuarios y forestales)",17373.444702148438,0.2639
+13,6121,Criadores y trabajadores calificados de ganado,56415.160511016846,0.275
+13,6122,Avicultores y trabajadores calificados de la avicultura,14760.65298461914,0.33330000000000004
+13,7111,Albañiles y constructores de casas y grandes obras civiles,12783.383731842041,0.09999999999999998
+13,7362,Zapateros y afines,16102.261024475098,0.20420000000000002
+13,8321,Conductores de motocicletas,14768.753959655762,0.2722
+13,8322,"Conductores de automóviles, taxis y camionetas",30236.59725189209,0.1583
+13,8332,Conductores de camiones pesados,12693.882015228271,0.23330000000000004
+13,9111,Limpiadores y asistentes domésticos,19407.433666229248,0.0625
+13,9112,"Limpiadores y asistentes de oficinas, hoteles y otros establecimientos",16573.16774749756,0.05
+13,9211,Peones de explotaciones agrícolas y ganaderas,117405.32768630981,0.05
+13,9313,Peones de la construcción de edificios,48832.6282119751,0.05
+13,9333,Peones de carga,11685.275379180908,0.05000000000000002
+13,9411,Cocineros de comidas preparadas en la calle,13782.416316986084,0.08
+13,9412,Ayudantes de cocina,18879.39782333374,0.049999999999999996
+13,9533,Vendedor ambulante de productos de tocador e higiene del hogar,13042.76033782959,0.1958
+13,9629,Otras ocupaciones elementales,12190.244609832764,0.26670000000000005
+14,4417,"Auxiliares en la administración, contabilidad, derecho y afines",11040.444208145142,0.6006999999999999
+14,5120,Cocineros,19436.45615386963,0.33
+14,5211,Vendedores mayoristas,12779.222383499146,0.5
+14,5212,Vendedores minoristas en tiendas y establecimientos (excepto kioscos y mercados),48556.96265220642,0.5993000000000002
+14,5213,Vendedores en kiosco fijo y puestos de mercado,15351.150611877441,0.3167
+14,5223,Asistentes de venta en tiendas y almacenes,13420.227058410645,0.44999999999999996
+14,6111,Agricultores y trabajadores calificados de cultivos extensivos,11750.988054275513,0.2639
+14,6114,"Agricultores y trabajadores calificados de cultivos mixtos (Agrícolas, pecuarios y forestales)",10185.587776184082,0.26389999999999997
+14,6122,Avicultores y trabajadores calificados de la avicultura,13438.921684265137,0.3333000000000001
+14,7513,"Panaderos, pasteleros y confiteros",11045.316143035889,0.13579999999999998
+14,8321,Conductores de motocicletas,34145.3751411438,0.2722
+14,8322,"Conductores de automóviles, taxis y camionetas",20598.70855140686,0.15829999999999997
+14,9111,Limpiadores y asistentes domésticos,14507.61102104187,0.0625
+14,9211,Peones de explotaciones agrícolas y ganaderas,93893.11218357086,0.05
+14,9313,Peones de la construcción de edificios,21778.379999160767,0.049999999999999996
+14,9533,Vendedor ambulante de productos de tocador e higiene del hogar,10321.250547409058,0.1958
+15,2142,Ingenieros civiles,11506.23442198454,0.49520000000000003
+15,2161,Arquitectos,14558.337510106085,0.4926
+15,2212,Médicos especialistas,10070.617934707996,0.4646
+15,2221,Profesionales de enfermería,19517.221114607008,0.3375000000000001
+15,2251,Dentistas,11388.552157980876,0.39440000000000003
+15,2311,Profesores de universidades,26965.9669275376,0.4111000000000001
+15,2330,Profesores de enseñanza secundaria,43750.23446341731,0.43599999999999994
+15,2341,Profesores de enseñanza primaria,49305.114915753686,0.3315
+15,2342,Profesores de enseñanza inicial,26099.01743436646,0.2875
+15,2359,Otros profesionales de la enseñanza,45977.62509393375,0.58
+15,2411,Contadores,35491.33871594037,0.6713
+15,2421,Analistas de gestión y organización,31572.238773588928,0.6261
+15,2512,Especialistas programadores,10186.412873456184,0.7139000000000001
+15,2611,Abogados,39522.27267045766,0.47919999999999996
+15,2634,Psicólogos,15744.691656196836,0.4917
+15,2642,Periodistas,10482.842111309717,0.4533000000000001
+15,3112,Técnicos en ingeniería civil,10535.760933055466,0.4374999999999999
+15,3113,Técnico en electricidad,11861.888770403099,0.41220000000000007
+15,3115,Técnicos en ingeniería mecánica,22489.98545256924,0.49940000000000007
+15,3122,Supervisores de industrias manufactureras,11561.732442133572,0.5517
+15,3213,Técnicos y asistentes farmacéuticos,12483.461919317826,0.3832999999999999
+15,3221,Técnicos en enfermería,39332.86632370755,0.3125
+15,3257,"Inspectores de la salud ocupacional, medioambiental y afines",13339.832987339678,0.42750000000000005
+15,3312,Técnicos en préstamos y créditos,12381.348027923674,0.5733
+15,3313,Técnicos en contabilidad,13584.143111649108,0.6000000000000001
+15,3314,Técnicos en administración,155986.93849573622,0.6725000000000001
+15,3322,Representantes comerciales,49212.06991058817,0.5443999999999999
+15,3334,Agentes inmobiliarios,11393.411472704483,0.47499999999999987
+15,3422,Entrenadores e instructores de actividades deportivas,10791.82890540655,0.458
+15,3432,Diseñadores y decoradores,45683.5683076963,0.5333
+15,3513,Técnicos en redes y sistemas de computadoras,21649.097344248898,0.4824999999999998
+15,3521,Técnicos de radiodifusión y grabación audio visual,10717.27475949542,0.3625
+15,4110,Jefes de empleados administrativos,48505.66629967211,0.6332999999999999
+15,4120,Secretarios,33143.993548566184,0.5466999999999999
+15,4222,Empleados de centros de llamadas,68414.89810482506,0.7025
+15,4224,Recepcionistas,20616.941520257762,0.43439999999999995
+15,4312,"Empleados de servicios estadísticos, financieros y de seguros",12479.89731615769,0.7775000000000003
+15,4321,Empleados de control de abastecimiento e inventario,75741.47522557076,0.43749999999999994
+15,4416,Empleados del servicio de personal,21801.4598310026,0.6475
+15,4417,"Auxiliares en la administración, contabilidad, derecho y afines",172308.4581417032,0.6006999999999999
+15,5120,Cocineros,155838.3794455827,0.33
+15,5131,Camareros de mesas,71859.72095852354,0.2067
+15,5141,Peluqueros,41156.023377176374,0.19999999999999998
+15,5142,Especialistas en tratamientos de belleza y afines,15670.935687669233,0.1
+15,5211,Vendedores mayoristas,91433.22541656144,0.5
+15,5212,Vendedores minoristas en tiendas y establecimientos (excepto kioscos y mercados),395619.5088558684,0.5993
+15,5213,Vendedores en kiosco fijo y puestos de mercado,130454.21946160935,0.31670000000000004
+15,5223,Asistentes de venta en tiendas y almacenes,112513.22161268751,0.45000000000000007
+15,5230,Cajeros y expendedores de billetes (excepto cajeros de banco),34071.716331816555,0.39000000000000007
+15,5241,"Demostradores, degustadores y reponedores",18096.349262151,0.3625
+15,5243,Vendedores por teléfono,44964.954061437486,0.6807999999999998
+15,5312,Auxiliares de maestros,21758.557106944547,0.37670000000000003
+15,5322,Trabajadores en el cuidado de personas a domicilio,15027.253723634938,0.2817
+15,5412,Policías municipales,20353.782315076838,0.3167
+15,5414,Guardias de protección en establecimiento,50288.69045265633,0.20000000000000004
+15,6111,Agricultores y trabajadores calificados de cultivos extensivos,17382.542390046667,0.2639
+15,6112,Agricultores y trabajadores calificados de plantaciones de árboles y arbustos,20936.196530659996,0.2905
+15,6114,"Agricultores y trabajadores calificados de cultivos mixtos (Agrícolas, pecuarios y forestales)",12509.876887003582,0.26389999999999997
+15,6121,Criadores y trabajadores calificados de ganado,18800.871000970667,0.27499999999999997
+15,7111,Albañiles y constructores de casas y grandes obras civiles,84986.79840056627,0.1
+15,7113,Carpinteros de armar y armados de casas,17287.833813493427,0.19579999999999997
+15,7127,Gasfiteros e instaladores de tuberías,26591.792955101668,0.1292
+15,7128,Pintores de brocha gorda,52508.42419292973,0.1333
+15,7212,Soldadores y oxicortadores,40388.178104557475,0.1
+15,7221,Herreros y forjadores,20363.134017161225,0.125
+15,7231,Mecánicos y reparadores de vehículos de motor,39107.25328819071,0.23749999999999996
+15,7322,Ebanistas y afines,50992.049343183484,0.2
+15,7352,"Sastres, modistos, costureros y sombrereros",42609.34015344191,0.225
+15,7354,"Bordadores, reparadores y ayudantes de costura",60881.34860168772,0.11000000000000003
+15,7362,Zapateros y afines,12139.713552265192,0.2042
+15,7411,Electricistas y afines,41518.65635084886,0.39580000000000004
+15,7421,Reparadores de equipos electrónicos y afines,21871.07815078357,0.22079999999999997
+15,7422,Instaladores y reparadores en tecnología de la información y las comunicaciones,10074.786186095618,0.3083
+15,7513,"Panaderos, pasteleros y confiteros",85429.35907544698,0.1358
+15,7515,"Trabajadores en la elaboración y conservación de productos elaborados a base de frutas, legumbres, verduras y afines.",11067.58288496007,0.11250000000000003
+15,8153,Operadores de máquinas de coser (industrial),35811.33381356568,0.125
+15,8321,Conductores de motocicletas,147223.7251847652,0.2722
+15,8322,"Conductores de automóviles, taxis y camionetas",174810.04879754034,0.15829999999999997
+15,8331,Conductores de autobuses y tranvías,61906.679011490334,0.0783
+15,8332,Conductores de camiones pesados,70030.27460596198,0.2333
+15,8343,"Operadores de grúas, aparatos elevadores y afines",15392.118434057973,0.1214
+15,9111,Limpiadores y asistentes domésticos,186502.73318035263,0.0625
+15,9112,"Limpiadores y asistentes de oficinas, hoteles y otros establecimientos",145229.3708835666,0.05
+15,9121,Lavanderos y planchadores manuales,18378.34840530984,0.08330000000000001
+15,9122,Lavadores de vehículos,12542.110896624974,0.05
+15,9211,Peones de explotaciones agrícolas y ganaderas,208085.1729806104,0.05
+15,9313,Peones de la construcción de edificios,155484.03972236358,0.05
+15,9321,Peones manuales de la industria manufacturera,24924.782865201683,0.07220000000000001
+15,9331,Conductores de vehículos accionados a pedal o a mano,12029.570016696496,0.10420000000000001
+15,9333,Peones de carga,53131.683136138556,0.05000000000000001
+15,9334,Cobradores de los transportes públicos,19982.37191555189,0.11670000000000001
+15,9411,Cocineros de comidas preparadas en la calle,78951.1661489468,0.08
+15,9412,Ayudantes de cocina,109105.85008970805,0.05000000000000001
+15,9511,Vendedores ambulantes de productos alimenticios manufacturados,48918.54817788367,0.08329999999999999
+15,9521,Vendedores ambulantes de productos agrícolas comestibles,33081.34244643884,0.125
+15,9531,Vendedor ambulante de productos farmacéuticos y plantas medicinales,13612.184721107882,0.18749999999999997
+15,9533,Vendedor ambulante de productos de tocador e higiene del hogar,69344.12427857191,0.19580000000000003
+15,9535,"Vendedor ambulante de telas, tejidos y confecciones de tela y/o cuero",58160.576090241695,0.1875
+15,9549,Otros vendedores ambulantes de aparatos o artículos para el hogar,13946.828585742058,0.15420000000000003
+15,9612,Clasificadores de desechos,37843.997848874424,0.1
+15,9613,Barrenderos y afines,10013.143659621708,0.049999999999999996
+15,9621,"Mensajeros, mandaderos, maleteros y repartidores de mercadería",68691.55929084998,0.1167
+15,9622,"Porteros, guardianes y afines",69883.53270819262,0.2
+15,9629,Otras ocupaciones elementales,119617.00993811042,0.26670000000000005
+16,5120,Cocineros,21373.8647813797,0.33000000000000007
+16,5212,Vendedores minoristas en tiendas y establecimientos (excepto kioscos y mercados),39220.00293827057,0.5993
+16,5223,Asistentes de venta en tiendas y almacenes,16863.17751598358,0.45
+16,6111,Agricultores y trabajadores calificados de cultivos extensivos,16591.860176086426,0.2639
+16,6112,Agricultores y trabajadores calificados de plantaciones de árboles y arbustos,17114.52384853363,0.29050000000000004
+16,6114,"Agricultores y trabajadores calificados de cultivos mixtos (Agrícolas, pecuarios y forestales)",28865.214913368225,0.2639
+16,6222,Pescadores de agua dulce y en aguas costeras,10190.872249603271,0.1533
+16,8321,Conductores de motocicletas,38025.27972602844,0.2722
+16,9211,Peones de explotaciones agrícolas y ganaderas,66823.9277381897,0.05
+16,9313,Peones de la construcción de edificios,11454.85544681549,0.05
+19,6114,"Agricultores y trabajadores calificados de cultivos mixtos (Agrícolas, pecuarios y forestales)",19978.081905007362,0.2639000000000001
+19,9211,Peones de explotaciones agrícolas y ganaderas,26508.592376232147,0.05
+20,2330,Profesores de enseñanza secundaria,11304.666419029236,0.436
+20,2341,Profesores de enseñanza primaria,11705.938493728638,0.3315
+20,3314,Técnicos en administración,11398.089262008667,0.6725
+20,4417,"Auxiliares en la administración, contabilidad, derecho y afines",16168.977487564087,0.6007000000000001
+20,5120,Cocineros,39981.1223154068,0.33
+20,5131,Camareros de mesas,10970.688247680664,0.2067
+20,5211,Vendedores mayoristas,14806.180679321289,0.5
+20,5212,Vendedores minoristas en tiendas y establecimientos (excepto kioscos y mercados),76997.36063861847,0.5993
+20,5213,Vendedores en kiosco fijo y puestos de mercado,15610.494565963745,0.3167
+20,5223,Asistentes de venta en tiendas y almacenes,23388.798322677612,0.45
+20,6111,Agricultores y trabajadores calificados de cultivos extensivos,44323.09164237976,0.2639
+20,6112,Agricultores y trabajadores calificados de plantaciones de árboles y arbustos,16197.18189048767,0.2904999999999999
+20,6114,"Agricultores y trabajadores calificados de cultivos mixtos (Agrícolas, pecuarios y forestales)",40377.07225418091,0.2639000000000001
+20,6121,Criadores y trabajadores calificados de ganado,18801.535829544067,0.27499999999999997
+20,6122,Avicultores y trabajadores calificados de la avicultura,59839.46952056885,0.33330000000000004
+20,7513,"Panaderos, pasteleros y confiteros",10494.71395111084,0.1358
+20,7518,Trabajadores de la preparación de bebidas alcohólicas y refrescos,15077.803207397461,0.1333
+20,8321,Conductores de motocicletas,56845.79076004028,0.2722
+20,8322,"Conductores de automóviles, taxis y camionetas",20220.67381668091,0.15829999999999997
+20,9111,Limpiadores y asistentes domésticos,19744.07653617859,0.0625
+20,9112,"Limpiadores y asistentes de oficinas, hoteles y otros establecimientos",13582.730432510376,0.049999999999999996
+20,9211,Peones de explotaciones agrícolas y ganaderas,174707.84178066254,0.05000000000000001
+20,9213,Peones de pesca y acuicultura,10131.07696723938,0.08749999999999998
+20,9313,Peones de la construcción de edificios,39648.545360565186,0.05
+20,9333,Peones de carga,10500.074630737305,0.05000000000000001
+20,9411,Cocineros de comidas preparadas en la calle,10665.44626045227,0.08
+20,9412,Ayudantes de cocina,20022.520273208618,0.05
+20,9533,Vendedor ambulante de productos de tocador e higiene del hogar,12753.859685897827,0.19579999999999997
+20,9622,"Porteros, guardianes y afines",10401.5045003891,0.20000000000000004
+20,9629,Otras ocupaciones elementales,13750.149757385254,0.2667
+21,2341,Profesores de enseñanza primaria,10113.669596672058,0.33149999999999996
+21,4417,"Auxiliares en la administración, contabilidad, derecho y afines",10239.031787395477,0.6007
+21,5212,Vendedores minoristas en tiendas y establecimientos (excepto kioscos y mercados),29627.220648765564,0.5992999999999999
+21,6111,Agricultores y trabajadores calificados de cultivos extensivos,23428.708988189697,0.2639
+21,6114,"Agricultores y trabajadores calificados de cultivos mixtos (Agrícolas, pecuarios y forestales)",149303.74155044556,0.2639
+21,6121,Criadores y trabajadores calificados de ganado,21204.97636270523,0.275
+21,8321,Conductores de motocicletas,15111.169806480408,0.27219999999999994
+21,9211,Peones de explotaciones agrícolas y ganaderas,143483.46450090408,0.05
+21,9313,Peones de la construcción de edificios,37939.224994421005,0.05
+21,9411,Cocineros de comidas preparadas en la calle,14101.5721783638,0.08
+21,9412,Ayudantes de cocina,13301.366254329681,0.05000000000000001
+22,5120,Cocineros,14208.047496438026,0.33
+22,5212,Vendedores minoristas en tiendas y establecimientos (excepto kioscos y mercados),27119.783880233765,0.5993
+22,6111,Agricultores y trabajadores calificados de cultivos extensivos,15327.931962490082,0.2639
+22,6112,Agricultores y trabajadores calificados de plantaciones de árboles y arbustos,38262.246559381485,0.2905
+22,6114,"Agricultores y trabajadores calificados de cultivos mixtos (Agrícolas, pecuarios y forestales)",37427.09011507034,0.2639
+22,6122,Avicultores y trabajadores calificados de la avicultura,11890.20007777214,0.3333
+22,8321,Conductores de motocicletas,21135.670773267746,0.27220000000000005
+22,9111,Limpiadores y asistentes domésticos,11126.8162753582,0.0625
+22,9211,Peones de explotaciones agrícolas y ganaderas,120264.76038312912,0.05
+22,9313,Peones de la construcción de edificios,16483.352823019028,0.05
+23,5212,Vendedores minoristas en tiendas y establecimientos (excepto kioscos y mercados),11807.17904472351,0.5993
+23,9211,Peones de explotaciones agrícolas y ganaderas,23753.15555381775,0.05
+23,9313,Peones de la construcción de edificios,10886.895762443542,0.05000000000000001
+24,5212,Vendedores minoristas en tiendas y establecimientos (excepto kioscos y mercados),10976.846183538437,0.5993
+24,8321,Conductores de motocicletas,12247.762778997421,0.2722
+24,9211,Peones de explotaciones agrícolas y ganaderas,10911.514347553253,0.05000000000000002
+25,5120,Cocineros,11186.074875831604,0.33
+25,5212,Vendedores minoristas en tiendas y establecimientos (excepto kioscos y mercados),26135.8356590271,0.5993
+25,6112,Agricultores y trabajadores calificados de plantaciones de árboles y arbustos,14814.680419921875,0.2905
+25,6114,"Agricultores y trabajadores calificados de cultivos mixtos (Agrícolas, pecuarios y forestales)",16985.435143470764,0.2639000000000001
+25,8321,Conductores de motocicletas,25481.48100376129,0.2722
+25,9211,Peones de explotaciones agrícolas y ganaderas,34715.12917327881,0.05
+25,9313,Peones de la construcción de edificios,10069.48999118805,0.05

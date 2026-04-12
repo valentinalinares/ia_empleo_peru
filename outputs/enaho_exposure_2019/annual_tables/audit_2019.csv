@@ -1,0 +1,2 @@
+analysis_year,coverage_report,coverage_rebuilt,coverage_diff,mean_exposure_report,mean_exposure_rebuilt,mean_exposure_diff,pct_alta_report,pct_alta_rebuilt,pct_aumento_report,pct_aumento_rebuilt,pct_sustitucion_report,pct_sustitucion_rebuilt,unmatched_occupations,outliers_over_20k,outliers_over_50k
+2019,0.9612044409041842,0.9612044409041842,0.0,0.2676984605564567,0.26769846055645674,5.551115123125783e-17,0.1443026573949177,0.1443026573949177,0.288486828409634,0.28848682840963397,0.009088881619274933,0.009088881619274933,24,2,0

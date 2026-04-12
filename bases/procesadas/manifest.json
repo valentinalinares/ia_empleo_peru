@@ -1,0 +1,28 @@
+{
+  "enaho_years": [
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024
+  ],
+  "epen_departamentos_years": [
+    2022,
+    2023,
+    2024,
+    2025
+  ],
+  "epen_lima_years": [
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "base_rows": 1409825,
+  "summary_rows": 17405,
+  "crosswalk_rows": 472,
+  "market_period_rows": 51,
+  "market_month_rows": 120
+}

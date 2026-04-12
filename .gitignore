@@ -1,0 +1,6 @@
+bases/originales/enaho/**
+bases/originales/epen/**
+!bases/originales/README.md
+
+**/__pycache__/
+**/.ipynb_checkpoints/

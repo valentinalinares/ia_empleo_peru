@@ -1,0 +1,15 @@
+{
+  "report_rows": 59447,
+  "report_weight_total": 18021416.857165195,
+  "coverage_weighted": 0.9716410512094035,
+  "covered_workers": 17510348.41937885,
+  "mean_exposure": 0.2683340343151699,
+  "pct_alta": 0.1471312835873546,
+  "pct_sustitucion": 0.007651448339714688,
+  "pct_aumento": 0.2895700295075247,
+  "matched_occupations": 378,
+  "observed_occupations": 400,
+  "unmatched_occupations": 22,
+  "income_outliers_over_20k": 3,
+  "income_outliers_over_50k": 0
+}

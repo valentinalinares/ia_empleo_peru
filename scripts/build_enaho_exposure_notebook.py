@@ -12,7 +12,11 @@ def md(text: str) -> nbf.NotebookNode:
 
 
 def code(text: str) -> nbf.NotebookNode:
-    return nbf.v4.new_code_cell(text)
+    cell = nbf.v4.new_code_cell(text)
+    cell.metadata["jupyter"] = {"source_hidden": True, "outputs_hidden": False}
+    cell.metadata["collapsed"] = True
+    cell.metadata["tags"] = ["hide-input"]
+    return cell
 
 
 def src(text: str) -> str:
@@ -205,6 +209,10 @@ def build_enaho_exposure_notebook(
             CSS = f\"\"\"
             <style>
             body {{ background:{COLORS["bg"]}; }}
+            .jp-Cell-inputWrapper, .jp-InputArea, .jp-InputPrompt,
+            div.input, div.input_area, .input_prompt {{
+                display:none !important;
+            }}
             .audit-grid {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin:8px 0 20px 0; }}
             .audit-card {{ background:{COLORS["card"]}; border:1px solid {COLORS["border"]}; border-radius:14px; padding:14px 16px; }}
             .audit-card .eyebrow {{ font-size:11px; text-transform:uppercase; letter-spacing:.08em; color:{COLORS["muted"]}; }}

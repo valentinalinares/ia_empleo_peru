@@ -6,6 +6,7 @@ Carpeta de entrega ordenada para presentación.
 
 - `reporte_ia_empleo_peru_2019_2024.html`: reporte maestro final.
 - `notebooks/`: notebooks anuales por año.
+- `notebooks/htmls/`: versión HTML de cada notebook anual, nombrada solo por año.
 
 ## Notebooks
 
@@ -15,6 +16,15 @@ Carpeta de entrega ordenada para presentación.
 - `ia_empleo_peru_2022.ipynb`
 - `ia_empleo_peru_2023.ipynb`
 - `ia_empleo_peru_2024.ipynb`
+
+## HTML de notebooks
+
+- `notebooks/htmls/2019.html`
+- `notebooks/htmls/2020.html`
+- `notebooks/htmls/2021.html`
+- `notebooks/htmls/2022.html`
+- `notebooks/htmls/2023.html`
+- `notebooks/htmls/2024.html`
 
 ## Sobre el prefijo `03`
 

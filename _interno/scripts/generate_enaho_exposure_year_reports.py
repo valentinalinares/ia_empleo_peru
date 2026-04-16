@@ -32,9 +32,10 @@ def main() -> None:
     args = parse_args()
     project_root = args.project_root.resolve()
     workspace_root = project_root.parent
+    presentation_root = project_root.parent if project_root.name == "_interno" else project_root
     generator = project_root / "scripts" / "build_enaho_exposure_notebook.py"
-    notebooks_dir = project_root / "notebooks" / "enaho_exposure"
-    html_dir = project_root / "outputs" / "html" / "enaho_exposure"
+    notebooks_dir = presentation_root / "notebooks"
+    html_dir = project_root / "notebooks_html"
     base_dir = resolve_existing_path(
         project_root / "bases" / "intermedias" / "enaho_complete_years",
         project_root / "data" / "intermediate" / "enaho_complete_years",
@@ -45,7 +46,7 @@ def main() -> None:
 
     for year in range(args.start_year, args.end_year + 1):
         base_csv = base_dir / f"ENAHO_complete_{year}.csv"
-        notebook_path = notebooks_dir / f"03_enaho_exposure_{year}.ipynb"
+        notebook_path = notebooks_dir / f"ia_empleo_peru_{year}.ipynb"
 
         run(
             [

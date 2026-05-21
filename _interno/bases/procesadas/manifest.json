@@ -5,7 +5,8 @@
     2021,
     2022,
     2023,
-    2024
+    2024,
+    2025
   ],
   "epen_departamentos_years": [
     2022,
@@ -20,9 +21,9 @@
     2025,
     2026
   ],
-  "base_rows": 1409825,
-  "summary_rows": 17405,
+  "base_rows": 1467541,
+  "summary_rows": 17802,
   "crosswalk_rows": 472,
-  "market_period_rows": 51,
-  "market_month_rows": 120
+  "market_period_rows": 52,
+  "market_month_rows": 132
 }

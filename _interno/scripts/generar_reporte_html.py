@@ -16,7 +16,7 @@ OUTPUTS = INTERNAL_ROOT / "outputs"
 DATA = INTERNAL_ROOT / "bases" / "procesadas"
 YEARS = [2019, 2020, 2021, 2022, 2023, 2024, 2025]
 CURRENT_YEAR = 2025
-INCOME_YEAR = 2024
+INCOME_YEAR = CURRENT_YEAR
 REGIONAL_YEARS = [2022, 2023, 2024, 2025]
 
 DEPT_NAMES = {
@@ -123,7 +123,7 @@ resumen_merged = resumen.merge(
     left_on="occupation_code_4d", right_on="code", how="inner"
 )
 
-# Scatter ingreso vs exposición (último año con insumo de ingresos procesado)
+# Scatter ingreso vs exposición (año actual con insumo de ingresos procesado)
 income_scatter_rows = []
 for _, r in resumen_merged[
     (resumen_merged["source"] == "ENAHO") &
@@ -547,7 +547,7 @@ HTML = """<!DOCTYPE html>
   <div class="container">
     <div class="section-label">07 - Ingresos y exposicion</div>
     <div class="section-title">Relacion entre salario e indice de exposicion a la IA</div>
-    <div class="section-desc">Cada punto representa una ocupacion (ENAHO 2024, >50,000 trabajadores con ingreso reportado). El tamano refleja el numero de trabajadores; el color indica proporcion de mujeres. Las ocupaciones de mayor ingreso tienden a tener mayor exposicion. Esta seccion conserva 2024 porque el insumo procesado de ingresos todavia no fue extendido a 2025.</div>
+    <div class="section-desc">Cada punto representa una ocupacion (ENAHO 2025, >50,000 trabajadores con ingreso reportado). El tamano refleja el numero de trabajadores; el color indica proporcion de mujeres. Las ocupaciones de mayor ingreso tienden a tener mayor exposicion.</div>
     <div class="card"><div id="chart-income-scatter" style="height:520px;"></div></div>
     <div class="grid-2" style="margin-top:20px;">
       <div class="card"><div id="chart-income-evol" style="height:300px;"></div></div>
@@ -557,7 +557,7 @@ HTML = """<!DOCTYPE html>
       <strong>Lectura:</strong> La correlacion positiva entre ingreso y exposicion sugiere que las ocupaciones mejor remuneradas son tambien las mas expuestas a la IA. Esto implica que el impacto potencial se concentra en trabajadores con mayor capital humano, no en los mas vulnerables economicamente.
     </div>
     <div class="metodo" style="margin-top:12px;">
-      <strong>Como se calculo:</strong> Los ingresos provienen de la variable ingreso laboral mensual de ENAHO, estandarizada a periodicidad mensual (diario x30, semanal x4.33, etc.) y ponderada por el factor de expansion. Solo se incluyen trabajadores con ingreso reportado y match con el indice. El scatter usa ENAHO 2024 con umbral de 50,000 trabajadores por ocupacion.
+      <strong>Como se calculo:</strong> Los ingresos provienen de la variable ingreso laboral mensual de ENAHO, estandarizada a periodicidad mensual (diario x30, semanal x4.33, etc.) y ponderada por el factor de expansion. Solo se incluyen trabajadores con ingreso reportado y match con el indice. El scatter usa ENAHO 2025 con umbral de 50,000 trabajadores por ocupacion.
     </div>
   </div>
 </section>

@@ -299,8 +299,11 @@ def build_year_dataframe(raw_root: Path, year: int) -> pd.DataFrame:
 
 def main() -> None:
     args = parse_args()
-    raw_root = args.project_root / "data" / "raw" / "enaho"
-    out_dir = args.project_root / "data" / "intermediate" / "enaho_complete_years"
+    internal_root = args.project_root.resolve()
+    if internal_root.name != "_interno":
+        internal_root = internal_root / "_interno"
+    raw_root = internal_root / "bases" / "originales" / "enaho"
+    out_dir = internal_root / "bases" / "intermedias" / "enaho_complete_years"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     frames: list[pd.DataFrame] = []

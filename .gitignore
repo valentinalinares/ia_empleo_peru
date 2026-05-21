@@ -1,6 +1,6 @@
-bases/originales/enaho/**
-bases/originales/epen/**
-!bases/originales/README.md
+_interno/bases/originales/enaho/**
+_interno/bases/originales/epen/**
+!_interno/bases/originales/README.md
 
 **/__pycache__/
 **/.ipynb_checkpoints/

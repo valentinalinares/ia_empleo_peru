@@ -10,9 +10,10 @@ from pathlib import Path
 
 warnings.filterwarnings("ignore")
 
-BASE    = Path(__file__).parent
-OUTPUTS = BASE / "Proyecto_IA_Empleo_2026" / "outputs"
-DATA    = BASE / "Proyecto_IA_Empleo_2026" / "data" / "processed"
+INTERNAL_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = INTERNAL_ROOT.parent
+OUTPUTS = INTERNAL_ROOT / "outputs"
+DATA = INTERNAL_ROOT / "bases" / "procesadas"
 YEARS   = [2019, 2020, 2021, 2022, 2023, 2024]
 
 DEPT_NAMES = {
@@ -25,7 +26,7 @@ DEPT_NAMES = {
 
 # ─── LOAD EXPOSURE INDEX ──────────────────────────────────────────────────────
 print("Cargando indice de exposicion...")
-idx = pd.read_excel(BASE / "abril2026" / "anthropic-claude-sonnet-4-6_exposure_index.xlsx")
+idx = pd.read_excel(INTERNAL_ROOT / "referencias" / "indices" / "anthropic-claude-sonnet-4-6_exposure_index.xlsx")
 idx["code"] = idx["code"].astype(str).str.zfill(4)
 idx_cols = ["code","mean_exposure_score","%_alta_exposicion","%_sustitucion","%_aumento"]
 
@@ -1091,7 +1092,7 @@ function showRegionOcc(rc){
 </body>
 </html>"""
 
-out_path = BASE / "reporte_ia_empleo_peru_2019_2024.html"
+out_path = PROJECT_ROOT / "reporte_ia_empleo_peru_2019_2024.html"
 with open(out_path, "w", encoding="utf-8") as f:
     f.write(HTML)
 

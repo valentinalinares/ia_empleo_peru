@@ -1,25 +1,18 @@
 # Bases originales
 
-Esta carpeta forma parte del bundle local `ia_empleo_peru`, pero en GitHub no se versionan los microdatos crudos completos porque Git sigue los `junctions` como archivos reales y el volumen supera lo razonable para un repo de publicacion.
+Esta carpeta queda reservada para microdatos crudos si se quiere reconstruir el pipeline desde cero.
 
-## Estructura local
+## Estado del bundle
 
-- `enaho/`: microdatos originales ENAHO usados en el pipeline.
-- `epen/`: microdatos originales EPEN usados en el bloque departamental.
+- La entrega portable usa las capas `procesadas`, `intermedias`, `outputs` y `referencias` ya incluidas en `ia_empleo_peru`.
+- Por eso los microdatos originales completos no se incluyen en esta versión.
 
-## Estado en el repo Git
+## Si se quiere reconstruir desde crudo
 
-- En la carpeta local, `enaho/` y `epen/` siguen disponibles mediante `junctions`.
-- En la version para GitHub, esas subcarpetas quedan excluidas del commit.
-- La replica publicable conserva:
-  - scripts,
-  - notebooks,
-  - HTML,
-  - tablas auxiliares,
-  - capas procesadas,
-  - capas intermedias,
-  - referencias e indice IA.
+- colocar ENAHO en `_interno/bases/originales/enaho/`
+- colocar EPEN en `_interno/bases/originales/epen/`
+- correr luego los scripts de `_interno/scripts/`
 
 ## Fuente institucional
 
-Los microdatos originales provienen del INEI y deben recuperarse desde las descargas oficiales correspondientes a ENAHO y EPEN o desde la copia local del proyecto fuente.
+Los microdatos originales provienen del INEI y deben recuperarse desde las descargas oficiales correspondientes a ENAHO y EPEN.

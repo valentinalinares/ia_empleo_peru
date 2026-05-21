@@ -100,18 +100,18 @@ Fecha de auditoria: `2026-04-11`
 
 ## Archivos corregidos
 
-- `Proyecto_IA_Empleo_2026/scripts/build_enaho_complete_multiyear.py`
-- `Proyecto_IA_Empleo_2026/scripts/build_enaho_exposure_notebook.py`
-- `Proyecto_IA_Empleo_2026/scripts/generate_enaho_exposure_year_reports.py`
-- `generar_reporte_html.py`
+- `_interno/scripts/build_enaho_complete_multiyear.py`
+- `_interno/scripts/build_enaho_exposure_notebook.py`
+- `_interno/scripts/generate_enaho_exposure_year_reports.py`
+- `_interno/scripts/generar_reporte_html.py`
 - `reporte_ia_empleo_peru_2019_2024.html`
 
 ## Salidas regeneradas
 
-- `Proyecto_IA_Empleo_2026/data/intermediate/enaho_complete_years/ENAHO_complete_2019_2024.csv`
-- `Proyecto_IA_Empleo_2026/outputs/enaho_exposure_2019/` a `.../enaho_exposure_2024/`
-- `Proyecto_IA_Empleo_2026/notebooks/enaho_exposure/03_enaho_exposure_2019.ipynb` a `...2024.ipynb`
-- `Proyecto_IA_Empleo_2026/outputs/html/enaho_exposure/03_enaho_exposure_2019.html` a `...2024.html`
+- `_interno/bases/intermedias/enaho_complete_years/ENAHO_complete_2019_2024.csv`
+- `_interno/outputs/enaho_exposure_2019/` a `.../enaho_exposure_2024/`
+- `notebooks/ia_empleo_peru_2019.ipynb` a `...2024.ipynb`
+- `notebooks/htmls/2019.html` a `...2024.html`
 - `reporte_ia_empleo_peru_2019_2024.html`
 
 ## Fuentes oficiales consultadas

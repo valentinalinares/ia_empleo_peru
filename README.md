@@ -1,10 +1,10 @@
 # ia_empleo_peru
 
-Carpeta de entrega ordenada para presentación.
+Carpeta de entrega ordenada para presentación y preparada para funcionar desde esta misma carpeta con rutas relativas.
 
 ## Qué queda visible
 
-- `reporte_ia_empleo_peru_2019_2024.html`: reporte maestro final.
+- `reporte_ia_empleo_peru_2019_2024.html`: reporte maestro final para 2019-2024.
 - `notebooks/`: notebooks anuales por año.
 - `notebooks/htmls/`: versión HTML de cada notebook anual, nombrada solo por año.
 
@@ -16,6 +16,7 @@ Carpeta de entrega ordenada para presentación.
 - `ia_empleo_peru_2022.ipynb`
 - `ia_empleo_peru_2023.ipynb`
 - `ia_empleo_peru_2024.ipynb`
+- `ia_empleo_peru_2025.ipynb`
 
 ## HTML de notebooks
 
@@ -25,6 +26,9 @@ Carpeta de entrega ordenada para presentación.
 - `notebooks/htmls/2022.html`
 - `notebooks/htmls/2023.html`
 - `notebooks/htmls/2024.html`
+- `notebooks/htmls/2025.html`
+
+Nota: el año 2025 fue integrado como notebook/HTML anual y tablas internas. El reporte maestro todavía conserva el corte 2019-2024 hasta que se regenere una versión consolidada 2019-2025.
 
 ## Sobre el prefijo `03`
 
@@ -34,13 +38,13 @@ Para esta carpeta de presentación se quitó porque solo metía ruido.
 
 ## Carpeta interna
 
-`_interno/` guarda el soporte técnico y metodológico:
+`_interno/` guarda el soporte técnico y metodológico necesario para rerun del bundle:
 
 - bases
 - scripts
 - salidas auxiliares
 - referencias
 - auditoría
-- exportaciones HTML intermedias
+- insumos intermedios para los notebooks y el HTML maestro
 
 Eso se dejó fuera de la vista principal para que la carpeta sea más limpia al presentarla.

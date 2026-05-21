@@ -29,15 +29,17 @@ def build_enaho_exposure_notebook(
     analysis_year: int,
     index_path: Path | None = None,
 ) -> nbf.NotebookNode:
-    workspace_root = project_root.parent
+    internal_root = project_root.resolve()
+    if internal_root.name != "_interno":
+        internal_root = internal_root / "_interno"
     resolved_index = (
         index_path.resolve()
         if index_path
-        else (workspace_root / "abril2026" / "anthropic-claude-sonnet-4-6_exposure_index.xlsx")
+        else (internal_root / "referencias" / "indices" / "anthropic-claude-sonnet-4-6_exposure_index.xlsx")
     )
-    output_dir = project_root / "outputs" / f"enaho_exposure_{analysis_year}"
+    output_dir = internal_root / "outputs" / f"enaho_exposure_{analysis_year}"
     output_dir.mkdir(parents=True, exist_ok=True)
-    report_path = output_dir / f"enaho_exposure_{analysis_year}_occupation_report.xlsx"
+    base_csv_name = base_csv.name
 
     setup_source = (
         src(
@@ -70,26 +72,42 @@ def build_enaho_exposure_notebook(
                 spearmanr = None
                 HAS_SCIPY = False
 
-            PROJECT_ROOT = Path(r"__PROJECT_ROOT__")
-            WORKSPACE_ROOT = Path(r"__WORKSPACE_ROOT__")
-            BASE_CSV_PATH = Path(r"__BASE_CSV__")
-            INDEX_PATH = Path(r"__INDEX_PATH__")
-            REPORT_PATH = Path(r"__REPORT_PATH__")
-
-            def first_existing_path(*candidates):
-                for candidate in candidates:
-                    if candidate.exists():
+            def locate_project_root():
+                cwd = Path.cwd().resolve()
+                for candidate in (cwd, *cwd.parents):
+                    if (candidate / "_interno").exists() and (candidate / "notebooks").exists():
                         return candidate
-                return candidates[0]
+                raise FileNotFoundError(
+                    "No se encontró la raíz de ia_empleo_peru desde el directorio actual."
+                )
 
-            PROCESSED_DIR = first_existing_path(
-                PROJECT_ROOT / "bases" / "procesadas",
-                PROJECT_ROOT / "data" / "processed",
+            def require_path(path, label):
+                if not path.exists():
+                    raise FileNotFoundError(f"Falta {label}: {path}")
+                return path
+
+            ANALYSIS_YEAR = __ANALYSIS_YEAR__
+            PROJECT_ROOT = locate_project_root()
+            INTERNAL_ROOT = PROJECT_ROOT / "_interno"
+            BASE_CSV_PATH = require_path(
+                INTERNAL_ROOT / "bases" / "intermedias" / "enaho_complete_years" / "__BASE_CSV_NAME__",
+                "base ENAHO completa del año",
             )
-            OUTPUT_DIR = Path(r"__OUTPUT_DIR__")
+            INDEX_PATH = require_path(
+                INTERNAL_ROOT / "referencias" / "indices" / "__INDEX_FILENAME__",
+                "índice de exposición",
+            )
+            REPORT_PATH = require_path(
+                INTERNAL_ROOT / "outputs" / f"enaho_exposure_{ANALYSIS_YEAR}" / f"enaho_exposure_{ANALYSIS_YEAR}_occupation_report.xlsx",
+                "reporte anual consolidado",
+            )
+            PROCESSED_DIR = require_path(
+                INTERNAL_ROOT / "bases" / "procesadas",
+                "bases procesadas",
+            )
+            OUTPUT_DIR = INTERNAL_ROOT / "outputs" / f"enaho_exposure_{ANALYSIS_YEAR}"
             OUTPUT_TABLES = OUTPUT_DIR / "annual_tables"
             OUTPUT_TABLES.mkdir(parents=True, exist_ok=True)
-            ANALYSIS_YEAR = __ANALYSIS_YEAR__
 
             PROFILE_SHEETS = [
                 "sexo",
@@ -401,12 +419,8 @@ def build_enaho_exposure_notebook(
                     display(HTML(fig.to_html(full_html=False, include_plotlyjs="cdn" if include_js else False)))
             """
         )
-        .replace("__PROJECT_ROOT__", str(project_root))
-        .replace("__WORKSPACE_ROOT__", str(workspace_root))
-        .replace("__BASE_CSV__", str(base_csv.resolve()))
-        .replace("__INDEX_PATH__", str(resolved_index))
-        .replace("__REPORT_PATH__", str(report_path))
-        .replace("__OUTPUT_DIR__", str(output_dir))
+        .replace("__BASE_CSV_NAME__", base_csv_name)
+        .replace("__INDEX_FILENAME__", resolved_index.name)
         .replace("__ANALYSIS_YEAR__", str(analysis_year))
     )
     load_source = src(
@@ -1877,7 +1891,7 @@ def build_enaho_exposure_notebook(
             json.dump(audit_summary, fh, ensure_ascii=False, indent=2)
 
         exported_files = sorted(p.name for p in OUTPUT_TABLES.iterdir())
-        print(f"Tablas exportadas en: {OUTPUT_TABLES}")
+        print(f"Tablas exportadas en: {OUTPUT_TABLES.relative_to(PROJECT_ROOT)}")
         pd.DataFrame({"archivo": exported_files})
         """
     )

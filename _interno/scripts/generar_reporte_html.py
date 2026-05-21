@@ -1,6 +1,6 @@
 """
 Genera un reporte HTML interactivo: Exposición a IA en el Mercado Laboral Peruano
-Fuentes: ENAHO 2019-2024 + EPEN departamental 2022-2024 + Índice Claude Sonnet
+Fuentes: ENAHO 2019-2025 + EPEN departamental 2022-2025 + Índice Claude Sonnet
 """
 
 import pandas as pd
@@ -14,7 +14,10 @@ INTERNAL_ROOT = Path(__file__).resolve().parents[1]
 PROJECT_ROOT = INTERNAL_ROOT.parent
 OUTPUTS = INTERNAL_ROOT / "outputs"
 DATA = INTERNAL_ROOT / "bases" / "procesadas"
-YEARS   = [2019, 2020, 2021, 2022, 2023, 2024]
+YEARS = [2019, 2020, 2021, 2022, 2023, 2024, 2025]
+CURRENT_YEAR = 2025
+INCOME_YEAR = 2024
+REGIONAL_YEARS = [2022, 2023, 2024, 2025]
 
 DEPT_NAMES = {
     1:"Amazonas", 2:"Ancash", 3:"Apurímac", 4:"Arequipa", 5:"Ayacucho",
@@ -73,7 +76,7 @@ def top_occs(year, n=20):
 
 top_occ_by_year = {str(y): top_occs(y) for y in YEARS}
 
-# ─── BUBBLE DATA 2024 ─────────────────────────────────────────────────────────
+# ─── BUBBLE DATA AÑO ACTUAL ───────────────────────────────────────────────────
 def bubble_data(year, min_pop=80000):
     df = data[year]["occupation_summary"].copy()
     df = df[df["weighted_population"] >= min_pop]
@@ -87,7 +90,7 @@ def bubble_data(year, min_pop=80000):
         "pct_alta":   round(float(r["pct_alta_exposicion"]), 4),
     } for _, r in df.iterrows()]
 
-bubble_2024 = bubble_data(2024)
+bubble_current = bubble_data(CURRENT_YEAR)
 
 # ─── PERFILES DEMOGRÁFICOS ────────────────────────────────────────────────────
 def demo_profile(year, sheet):
@@ -102,7 +105,7 @@ def demo_profile(year, sheet):
         "pop_share":    round(float(r["population_share"]), 4),
     } for _, r in df.iterrows()], key=lambda x: x["mean_exposure"], reverse=True)
 
-profiles_2024 = {s: demo_profile(2024, s)
+profiles_current = {s: demo_profile(CURRENT_YEAR, s)
                  for s in ["educacion","sexo","categoria_agregada","rama","grupo_edad","formalidad_contrato","formalidad_tamano"]}
 
 profiles_evol = {}
@@ -120,11 +123,11 @@ resumen_merged = resumen.merge(
     left_on="occupation_code_4d", right_on="code", how="inner"
 )
 
-# Scatter ingreso vs exposición (ENAHO 2024, ocupaciones con >50k trabajadores)
+# Scatter ingreso vs exposición (último año con insumo de ingresos procesado)
 income_scatter_rows = []
 for _, r in resumen_merged[
     (resumen_merged["source"] == "ENAHO") &
-    (resumen_merged["year"] == 2024) &
+    (resumen_merged["year"] == INCOME_YEAR) &
     (resumen_merged["weighted_population"] > 50000) &
     (resumen_merged["income_monthly_weighted_mean"].notna())
 ].iterrows():
@@ -160,7 +163,7 @@ for y in YEARS:
         "corr_income_exposure": round(corr, 3) if corr is not None else None,
     })
 
-# ─── ANÁLISIS POR DEPARTAMENTO (EPEN 2022-2024) ───────────────────────────────
+# ─── ANÁLISIS POR DEPARTAMENTO (EPEN 2022-2025) ───────────────────────────────
 print("Calculando exposicion por departamento...")
 epen = pd.read_csv(DATA / "epen_persona_departamentos_anual_2022_2025.csv.gz")
 epen["occupation_code_4d"] = epen["occupation_code_4d"].astype(str).str.zfill(4)
@@ -169,7 +172,7 @@ epen_merged = epen.merge(
     idx[["code","mean_exposure_score","%_alta_exposicion","%_sustitucion","%_aumento"]],
     left_on="occupation_code_4d", right_on="code", how="inner"
 )
-epen_merged = epen_merged[epen_merged["year"].isin([2022, 2023, 2024])]
+epen_merged = epen_merged[epen_merged["year"].isin(REGIONAL_YEARS)]
 
 def weighted_mean(g, val_col, wt_col="weight"):
     valid = g[[val_col, wt_col]].dropna()
@@ -196,9 +199,9 @@ for (region, year), g in epen_merged.groupby(["region_code", "year"]):
 
 regional_data = regional_rows
 
-# Top occupations por departamento (2024, top 5 por región)
+# Top occupations por departamento (año actual, top 5 por región)
 top_occ_by_region = {}
-for region, g_region in epen_merged[epen_merged["year"] == 2024].groupby("region_code"):
+for region, g_region in epen_merged[epen_merged["year"] == CURRENT_YEAR].groupby("region_code"):
     occ_agg = g_region.groupby("occupation_code_4d").apply(
         lambda g: pd.Series({
             "mean_exposure": (g["mean_exposure_score"] * g["weight"]).sum() / g["weight"].sum(),
@@ -215,7 +218,7 @@ for region, g_region in epen_merged[epen_merged["year"] == 2024].groupby("region
         "workers":    int(r["workers"]),
     } for _, r in occ_agg.iterrows()]
 
-print("  Regiones procesadas:", len(regional_rows) // 3)
+print("  Regiones procesadas:", len(regional_rows) // len(REGIONAL_YEARS))
 
 # ─── PERFILES DE TRABAJADOR (PERSONAS) ───────────────────────────────────────
 print("Construyendo perfiles de trabajador...")
@@ -224,103 +227,39 @@ print("Construyendo perfiles de trabajador...")
 CAT_MAP = {1:"Empleador/a", 2:"Independiente", 3:"Empleado/a",
            4:"Obrero/a", 5:"Familiar no remunerado/a", 6:"Trab. del hogar", 7:"Otro"}
 
-# Education labels from 2024 profile sheet (sorted by exposure)
-edu_df = data[2024]["educacion"].sort_values("mean_exposure_score", ascending=False)
-edu_high = str(edu_df.iloc[0]["group"])
-edu_low  = str(edu_df.iloc[-1]["group"])
+personas_path = OUTPUTS / f"enaho_exposure_{CURRENT_YEAR}" / "annual_tables" / f"personas_{CURRENT_YEAR}.csv"
+personas_df = pd.read_csv(personas_path)
 
-enaho_micro = pd.read_csv(DATA / "enaho_persona_anual_2019_2024.csv.gz")
-enaho_micro = enaho_micro[enaho_micro["year"] == 2024].copy()
-enaho_micro["occupation_code_4d"] = enaho_micro["occupation_code_4d"].astype(str).str.zfill(4)
-
-micro_merged = enaho_micro.merge(
-    idx[["code", "mean_exposure_score", "occupation_group",
-         "%_alta_exposicion", "%_sustitucion", "%_aumento"]],
-    left_on="occupation_code_4d", right_on="code", how="inner"
-)
-
-def build_persona(df, label, tier, edu_label=None):
-    if len(df) == 0:
-        return None
-    w = df["weight"]
-    tw = w.sum()
-    sex_d = df.groupby("sex")["weight"].sum()
-    dom_sex = sex_d.idxmax()
-    pct_w = float(sex_d.get("Mujer", 0) / tw)
-    mean_age = float((df["age"] * w).sum() / tw)
-    cat_d = df.groupby("occupational_category_code")["weight"].sum()
-    top_cat = CAT_MAP.get(int(cat_d.idxmax()), "Otro")
-    occ_top = df.groupby(["occupation_code_4d", "occupation_group"])["weight"].sum().nlargest(3)
-    top_occs = [{"code": str(c), "name": (n[:58] if isinstance(n, str) else "N/D"), "workers": int(p)}
-                for (c, n), p in occ_top.items()]
-    inc_v = df[df["labor_income_monthly"].notna()]
-    inc_mean = float((inc_v["labor_income_monthly"] * inc_v["weight"]).sum() / inc_v["weight"].sum()) if len(inc_v) > 0 else None
-    pct_urban = float((df["is_urban"] * w).sum() / tw)
-    mean_exp  = float((df["mean_exposure_score"] * w).sum() / tw)
-    pct_alta  = float((df["%_alta_exposicion"] * w).sum() / tw)
-    pct_aug   = float((df["%_aumento"] * w).sum() / tw)
-    pct_sust  = float((df["%_sustitucion"] * w).sum() / tw)
+def parse_persona_row(r):
+    top_occs = json.loads(r["top_occupations"]) if isinstance(r.get("top_occupations"), str) else []
+    pct_women = float(r["pct_women"]) if pd.notna(r.get("pct_women")) else 0
     return {
-        "label": label, "tier": tier,
-        "total_workers": int(tw),
-        "sex": dom_sex, "pct_women": round(pct_w, 3),
-        "mean_age": round(mean_age, 1),
-        "education": edu_label,
-        "top_category": top_cat,
+        "label": str(r["label"]),
+        "tier": str(r["tier"]),
+        "total_workers": int(float(r["total_workers"])),
+        "sex": "Mujer" if pct_women >= 0.5 else "Hombre",
+        "pct_women": round(pct_women, 3),
+        "mean_age": round(float(r["mean_age"]), 1) if pd.notna(r.get("mean_age")) else None,
+        "education": str(r.get("top_education", "N/D")),
+        "top_category": str(r.get("top_category", "N/D")),
         "top_occupations": top_occs,
-        "income_mean": round(inc_mean, 0) if inc_mean else None,
-        "pct_urban": round(pct_urban, 3),
-        "mean_exposure": round(mean_exp, 4),
-        "pct_alta": round(pct_alta, 4),
-        "pct_aumento": round(pct_aug, 4),
-        "pct_sustitucion": round(pct_sust, 4),
+        "income_mean": round(float(r["income_mean"]), 0) if pd.notna(r.get("income_mean")) else None,
+        "pct_urban": round(float(r["pct_urban"]), 3) if pd.notna(r.get("pct_urban")) else None,
+        "mean_exposure": round(float(r["mean_exposure"]), 4),
+        "pct_alta": round(float(r["pct_alta"]), 4) if "pct_alta" in r and pd.notna(r.get("pct_alta")) else 0,
+        "pct_aumento": round(float(r["pct_aumento"]), 4),
+        "pct_sustitucion": round(float(r["pct_sustitucion"]), 4),
     }
 
-q75_nat = micro_merged["mean_exposure_score"].quantile(0.75)
-q25_nat = micro_merged["mean_exposure_score"].quantile(0.25)
-
-def region_personas(rc, rname):
-    sub = micro_merged[micro_merged["region_code"] == rc]
-    q75r = sub["mean_exposure_score"].quantile(0.75)
-    q25r = sub["mean_exposure_score"].quantile(0.25)
-    return [
-        build_persona(sub[sub["mean_exposure_score"] >= q75r], f"{rname} — alta exp. (Q4)", "alta", edu_high),
-        build_persona(sub[sub["mean_exposure_score"] <= q25r], f"{rname} — baja exp. (Q1)", "baja", edu_low),
-    ]
-
-persona_list = [
-    build_persona(micro_merged[micro_merged["mean_exposure_score"] >= q75_nat],
-                  "Peru — alta exp. (Q4)", "alta", edu_high),
-    build_persona(micro_merged[micro_merged["mean_exposure_score"] <= q25_nat],
-                  "Peru — baja exp. (Q1)", "baja", edu_low),
-] + region_personas(15, "Lima") + [
-    build_persona(micro_merged[micro_merged["region_code"].isin([15,7])]["mean_exposure_score"].pipe(
-        lambda s: micro_merged[(micro_merged["region_code"].isin([15,7])) &
-                               (micro_merged["mean_exposure_score"] >= s.quantile(0.75))]),
-        "Lima+Callao — alta exp. (Q4)", "alta", edu_high)
-    if False else None,
-    # Arequipa
-    *[p for p in [build_persona(
-        micro_merged[(micro_merged["region_code"]==4) &
-                     (micro_merged["mean_exposure_score"] >= micro_merged[micro_merged["region_code"]==4]["mean_exposure_score"].quantile(0.75))],
-        "Arequipa — alta exp. (Q4)", "alta", edu_high)] if p],
-    # La Libertad
-    *[p for p in [build_persona(
-        micro_merged[(micro_merged["region_code"]==13) &
-                     (micro_merged["mean_exposure_score"] >= micro_merged[micro_merged["region_code"]==13]["mean_exposure_score"].quantile(0.75))],
-        "La Libertad — alta exp. (Q4)", "alta", edu_high)] if p],
-]
-persona_list = [p for p in persona_list if p is not None]
-
-persona_list = [p for p in persona_list if p is not None]
+persona_list = [parse_persona_row(r) for _, r in personas_df.iterrows()]
 print(f"  Perfiles generados: {len(persona_list)}")
 
 # ─── SERIALIZE ────────────────────────────────────────────────────────────────
 DATA_JS = f"""
 const EVOLUTION = {json.dumps(evolution, ensure_ascii=False)};
 const TOP_OCC_BY_YEAR = {json.dumps(top_occ_by_year, ensure_ascii=False)};
-const BUBBLE_2024 = {json.dumps(bubble_2024, ensure_ascii=False)};
-const PROFILES_2024 = {json.dumps(profiles_2024, ensure_ascii=False)};
+const BUBBLE_CURRENT = {json.dumps(bubble_current, ensure_ascii=False)};
+const PROFILES_CURRENT = {json.dumps(profiles_current, ensure_ascii=False)};
 const PROFILES_EVOL = {json.dumps(profiles_evol, ensure_ascii=False)};
 const INCOME_SCATTER = {json.dumps(income_scatter_rows, ensure_ascii=False)};
 const INCOME_EVOLUTION = {json.dumps(income_evolution, ensure_ascii=False)};
@@ -336,7 +275,7 @@ HTML = """<!DOCTYPE html>
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Exposicion a IA en el Empleo Peruano 2019-2024</title>
+<title>Exposicion a IA en el Empleo Peruano 2019-2025</title>
 <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
 <style>
   :root {
@@ -472,16 +411,16 @@ HTML = """<!DOCTYPE html>
   <a href="#departamentos">Departamentos</a>
   <a href="#personas" style="color:#f9a8d4;font-weight:600;">Quienes son?</a>
   <div class="spacer"></div>
-  <span class="badge">2019-2024</span>
+  <span class="badge">2019-2025</span>
 </nav>
 
 <div class="hero">
   <div class="hero-inner">
     <div class="hero-eyebrow">Investigacion - Universidad del Pacifico - 2026</div>
     <h1>Exposicion a la Inteligencia Artificial<br>en el <span>Empleo Peruano</span></h1>
-    <p>Seis anos de ENAHO cruzados con un indice de exposicion ocupacional construido con Claude Sonnet. Analisis de ocupaciones, perfiles demograficos, ingresos y distribucion regional.</p>
+    <p>Siete anos de ENAHO cruzados con un indice de exposicion ocupacional construido con Claude Sonnet. Analisis de ocupaciones, perfiles demograficos, ingresos y distribucion regional.</p>
     <div class="hero-meta">
-      <span><strong>Fuente:</strong> ENAHO 2019-2024 (INEI) + EPEN Departamental 2022-2024</span>
+      <span><strong>Fuente:</strong> ENAHO 2019-2025 (INEI) + EPEN Departamental 2022-2025</span>
       <span><strong>Indice:</strong> Claude Sonnet 4-6 / Abril 2026</span>
       <span><strong>Clasificacion:</strong> CNO-2015 4 digitos</span>
     </div>
@@ -490,12 +429,12 @@ HTML = """<!DOCTYPE html>
 
 <div class="kpi-strip">
   <div class="kpi-inner">
-    <div class="kpi"><div class="kpi-val">27.2%</div><div class="kpi-label">Exposicion media 2024</div><div class="kpi-delta">+0.5pp vs 2019</div></div>
-    <div class="kpi"><div class="kpi-val">14.9%</div><div class="kpi-label">Trabajadores alta exposicion</div><div class="kpi-delta">+0.5pp vs 2019</div></div>
-    <div class="kpi"><div class="kpi-val">29.7%</div><div class="kpi-label">Tasa augmentation 2024</div><div class="kpi-delta">vs 0.7% sustitucion</div></div>
-    <div class="kpi"><div class="kpi-val">17.7M</div><div class="kpi-label">Trabajadores cubiertos</div><div class="kpi-delta">96.9% del empleo ocupado</div></div>
-    <div class="kpi"><div class="kpi-val">379</div><div class="kpi-label">Ocupaciones analizadas</div><div class="kpi-delta">de 401 observadas</div></div>
-    <div class="kpi"><div class="kpi-val">25</div><div class="kpi-label">Departamentos (EPEN)</div><div class="kpi-delta">2022-2024</div></div>
+    <div class="kpi"><div class="kpi-val">27.0%</div><div class="kpi-label">Exposicion media 2025</div><div class="kpi-delta">+0.2pp vs 2019</div></div>
+    <div class="kpi"><div class="kpi-val">14.6%</div><div class="kpi-label">Trabajadores alta exposicion</div><div class="kpi-delta">+0.2pp vs 2019</div></div>
+    <div class="kpi"><div class="kpi-val">29.1%</div><div class="kpi-label">Tasa augmentation 2025</div><div class="kpi-delta">vs 0.8% sustitucion</div></div>
+    <div class="kpi"><div class="kpi-val">17.9M</div><div class="kpi-label">Trabajadores cubiertos</div><div class="kpi-delta">96.8% del empleo ocupado</div></div>
+    <div class="kpi"><div class="kpi-val">377</div><div class="kpi-label">Ocupaciones analizadas</div><div class="kpi-delta">de 397 observadas</div></div>
+    <div class="kpi"><div class="kpi-val">25</div><div class="kpi-label">Departamentos (EPEN)</div><div class="kpi-delta">2022-2025</div></div>
   </div>
 </div>
 
@@ -503,13 +442,13 @@ HTML = """<!DOCTYPE html>
 <section class="section" id="evolucion">
   <div class="container">
     <div class="section-label">01 - Serie temporal</div>
-    <div class="section-title">Evolucion de la exposicion 2019-2024</div>
-    <div class="section-desc">La exposicion media al impacto de la IA crecio de 26.8% (2019) a 27.2% (2024). La caida de 2020 refleja cambios en la composicion sectorial del empleo durante la pandemia. El augmentation domina consistentemente sobre la sustitucion.</div>
+    <div class="section-title">Evolucion de la exposicion 2019-2025</div>
+    <div class="section-desc">La exposicion media al impacto de la IA se mantiene cerca de 27% entre 2019 y 2025. La caida de 2020 refleja cambios en la composicion sectorial del empleo durante la pandemia. El augmentation domina consistentemente sobre la sustitucion.</div>
     <div class="card">
       <div id="chart-evolution" style="height:360px;"></div>
     </div>
     <div class="metodo">
-      <strong>Como se calculo:</strong> Cada ocupado ENAHO (2019-2024) fue emparejado con su ocupacion CNO 4 digitos. A esa ocupacion se le asigno el score del indice construido con Claude Sonnet 4-6 sobre el CNO-2015. La exposicion agregada es la media ponderada por factor de expansion (peso muestral). La cobertura del cruce supera 96% del empleo ocupado y el remanente corresponde sobre todo a ocupaciones observadas en ENAHO que aun no tienen score en el indice. Augmentation = la IA amplifica las capacidades del trabajador. Sustitucion = la IA podria reemplazar la tarea.
+      <strong>Como se calculo:</strong> Cada ocupado ENAHO (2019-2025) fue emparejado con su ocupacion CNO 4 digitos. A esa ocupacion se le asigno el score del indice construido con Claude Sonnet 4-6 sobre el CNO-2015. La exposicion agregada es la media ponderada por factor de expansion (peso muestral). La cobertura del cruce supera 96% del empleo ocupado y el remanente corresponde sobre todo a ocupaciones observadas en ENAHO que aun no tienen score en el indice. Augmentation = la IA amplifica las capacidades del trabajador. Sustitucion = la IA podria reemplazar la tarea.
     </div>
   </div>
 </section>
@@ -526,7 +465,8 @@ HTML = """<!DOCTYPE html>
       <button class="year-tab" onclick="showTopOcc(2021)">2021</button>
       <button class="year-tab" onclick="showTopOcc(2022)">2022</button>
       <button class="year-tab" onclick="showTopOcc(2023)">2023</button>
-      <button class="year-tab active" onclick="showTopOcc(2024)">2024</button>
+      <button class="year-tab" onclick="showTopOcc(2024)">2024</button>
+      <button class="year-tab active" onclick="showTopOcc(2025)">2025</button>
     </div>
     <div class="grid-2">
       <div class="card" id="top-occ-list" style="overflow-y:auto;max-height:540px;"></div>
@@ -542,11 +482,11 @@ HTML = """<!DOCTYPE html>
 <section class="section" id="mapa">
   <div class="container">
     <div class="section-label">03 - Mapa ocupacional</div>
-    <div class="section-title">Exposicion vs. tamano del empleo (2024)</div>
+    <div class="section-title">Exposicion vs. tamano del empleo (2025)</div>
     <div class="section-desc">Cada burbuja es una ocupacion (>=80,000 trabajadores). Eje X = exposicion media; Eje Y = numero de trabajadores (escala log). Color = proporcion de mujeres. Pasa el cursor para ver detalle.</div>
     <div class="card"><div id="chart-bubble" style="height:500px;"></div></div>
     <div class="metodo">
-      <strong>Como se calculo:</strong> Mismo empate CNO x score que en el ranking. Cada burbuja representa una ocupacion con >=80,000 trabajadores en ENAHO 2024. El tamano de la burbuja es proporcional a la poblacion ponderada. El color indica la proporcion de mujeres en esa ocupacion segun ENAHO 2024.
+      <strong>Como se calculo:</strong> Mismo empate CNO x score que en el ranking. Cada burbuja representa una ocupacion con >=80,000 trabajadores en ENAHO 2025. El tamano de la burbuja es proporcional a la poblacion ponderada. El color indica la proporcion de mujeres en esa ocupacion segun ENAHO 2025.
     </div>
   </div>
 </section>
@@ -556,7 +496,7 @@ HTML = """<!DOCTYPE html>
   <div class="container">
     <div class="section-label">04 - Perfil del trabajador expuesto</div>
     <div class="section-title">Quienes trabajan en ocupaciones de alta exposicion?</div>
-    <div class="section-desc">Exposicion media ponderada por caracteristica del trabajador (ENAHO 2024). El porcentaje entre parentesis es la participacion de ese grupo en el empleo total.</div>
+    <div class="section-desc">Exposicion media ponderada por caracteristica del trabajador (ENAHO 2025). El porcentaje entre parentesis es la participacion de ese grupo en el empleo total.</div>
     <div class="profile-grid">
       <div class="profile-card"><h4>Nivel educativo</h4><div id="prof-educacion"></div></div>
       <div class="profile-card"><h4>Sexo</h4><div id="prof-sexo"></div></div>
@@ -569,7 +509,7 @@ HTML = """<!DOCTYPE html>
       <div id="chart-profiles" style="height:420px;"></div>
     </div>
     <div class="metodo">
-      <strong>Como se calculo:</strong> Para cada grupo demografico (ej: "secundaria completa", "empleado"), se identifica a todos los trabajadores ENAHO 2024 que pertenecen a ese grupo y tienen match con el indice. Se calcula la media del score de exposicion ponderada por el factor de expansion. El porcentaje entre parentesis es la participacion de ese grupo en el empleo total cubierto.
+      <strong>Como se calculo:</strong> Para cada grupo demografico (ej: "secundaria completa", "empleado"), se identifica a todos los trabajadores ENAHO 2025 que pertenecen a ese grupo y tienen match con el indice. Se calcula la media del score de exposicion ponderada por el factor de expansion. El porcentaje entre parentesis es la participacion de ese grupo en el empleo total cubierto.
     </div>
   </div>
 </section>
@@ -578,7 +518,7 @@ HTML = """<!DOCTYPE html>
 <section class="section" id="tendencias">
   <div class="container">
     <div class="section-label">05 - Tendencias por segmento</div>
-    <div class="section-title">Como cambio la exposicion por sector? (2019-2024)</div>
+    <div class="section-title">Como cambio la exposicion por sector? (2019-2025)</div>
     <div class="section-desc">Evolucion de la exposicion media por rama de actividad y nivel educativo.</div>
     <div class="grid-2">
       <div class="card"><div id="chart-rama-evol" style="height:380px;"></div></div>
@@ -592,7 +532,7 @@ HTML = """<!DOCTYPE html>
   <div class="container">
     <div class="section-label">06 - Comparativo</div>
     <div class="section-title">Alta exposicion vs. baja exposicion</div>
-    <div class="section-desc">Subgrupos con mayor y menor exposicion dentro de cada dimension demografica (2024).</div>
+    <div class="section-desc">Subgrupos con mayor y menor exposicion dentro de cada dimension demografica (2025).</div>
     <div class="card"><div id="chart-comparative" style="height:420px;"></div></div>
     <div class="note" style="margin-top:20px;">
       <strong>Hallazgo:</strong> Los trabajadores de alta exposicion son mas educados, trabajan en comercio y servicios, tienen empleo formal y participacion femenina mas alta. El augmentation domina en todos los grupos.
@@ -607,7 +547,7 @@ HTML = """<!DOCTYPE html>
   <div class="container">
     <div class="section-label">07 - Ingresos y exposicion</div>
     <div class="section-title">Relacion entre salario e indice de exposicion a la IA</div>
-    <div class="section-desc">Cada punto representa una ocupacion (ENAHO 2024, >50,000 trabajadores con ingreso reportado). El tamano refleja el numero de trabajadores; el color indica proporcion de mujeres. Las ocupaciones de mayor ingreso tienden a tener mayor exposicion.</div>
+    <div class="section-desc">Cada punto representa una ocupacion (ENAHO 2024, >50,000 trabajadores con ingreso reportado). El tamano refleja el numero de trabajadores; el color indica proporcion de mujeres. Las ocupaciones de mayor ingreso tienden a tener mayor exposicion. Esta seccion conserva 2024 porque el insumo procesado de ingresos todavia no fue extendido a 2025.</div>
     <div class="card"><div id="chart-income-scatter" style="height:520px;"></div></div>
     <div class="grid-2" style="margin-top:20px;">
       <div class="card"><div id="chart-income-evol" style="height:300px;"></div></div>
@@ -626,7 +566,7 @@ HTML = """<!DOCTYPE html>
 <section class="section" id="departamentos">
   <div class="container">
     <div class="section-label">08 - Analisis departamental</div>
-    <div class="section-title">Exposicion a la IA por departamento (EPEN 2022-2024)</div>
+    <div class="section-title">Exposicion a la IA por departamento (EPEN 2022-2025)</div>
     <div class="section-desc">Distribucion geografica de la exposicion ocupacional usando EPEN departamental. Lima y Arequipa lideran por su mayor concentracion de empleos formales en servicios y comercio. Selecciona un departamento para ver sus ocupaciones mas expuestas.</div>
 
     <div class="grid-2" style="margin-bottom:24px;">
@@ -639,7 +579,7 @@ HTML = """<!DOCTYPE html>
     </div>
 
     <!-- Region selector -->
-    <div class="section-title" style="font-size:18px;margin-bottom:12px;">Ocupaciones mas expuestas por departamento (2024)</div>
+    <div class="section-title" style="font-size:18px;margin-bottom:12px;">Ocupaciones mas expuestas por departamento (2025)</div>
     <div class="region-grid" id="region-selector"></div>
     <div class="card" style="margin-top:16px;">
       <div id="region-occ-list"></div>
@@ -658,7 +598,7 @@ HTML = """<!DOCTYPE html>
   <div class="container">
     <div class="section-label">09 - Perfiles del trabajador expuesto</div>
     <div class="section-title">A quien impacta la IA? El rostro de la exposicion</div>
-    <div class="section-desc">Perfil tipico del trabajador en el cuartil de mayor exposicion (Q4) segun la ENAHO 2024, a nivel nacional y por zona geografica. El perfil muestra las caracteristicas modales y promedio de quienes trabajan en las ocupaciones mas expuestas. Se incluye tambien el perfil de baja exposicion para contraste.</div>
+    <div class="section-desc">Perfil tipico del trabajador en el cuartil de mayor exposicion (Q4) segun la ENAHO 2025, a nivel nacional. El perfil muestra las caracteristicas modales y promedio de quienes trabajan en las ocupaciones mas expuestas. Se incluye tambien el perfil de baja exposicion para contraste.</div>
 
     <div class="persona-grid" id="persona-grid"></div>
 
@@ -670,14 +610,14 @@ HTML = """<!DOCTYPE html>
       <strong>Que nos dice este perfil:</strong> El trabajador de alta exposicion en Peru tiende a concentrarse en ocupaciones urbanas de comercio, servicios y apoyo administrativo, con mayor educacion formal, mas presencia femenina y mejores ingresos que el grupo de baja exposicion. En contraste, la baja exposicion se concentra en agricultura, construccion y ocupaciones elementales, con menor ingreso y menor urbanizacion. En ambos casos domina mas el componente de augmentation que el de sustitucion directa.
     </div>
     <div class="metodo" style="margin-top:12px;">
-      <strong>Como se construyo:</strong> Se seleccionan todos los trabajadores ENAHO 2024 con match al indice de exposicion. Se identifica el cuartil superior (Q4, score >= percentil 75) y se calculan: sexo modal, edad media ponderada, categoria de empleo modal, top 3 ocupaciones por numero de trabajadores, ingreso medio ponderado y porcentaje urbano. Para cada zona geografica (Lima, Arequipa, Callao, Loreto) se repite el mismo procedimiento con los trabajadores de esa region.
+      <strong>Como se construyo:</strong> Se seleccionan todos los trabajadores ENAHO 2025 con match al indice de exposicion. Se identifica el cuartil superior (Q4, score >= percentil 75) y se calculan: sexo modal, edad media ponderada, categoria de empleo modal, top 3 ocupaciones por numero de trabajadores y porcentaje urbano.
     </div>
   </div>
 </section>
 
 <footer>
   <div class="container">
-    <strong>Exposicion a IA en el Empleo Peruano 2019-2024</strong><br><br>
+    <strong>Exposicion a IA en el Empleo Peruano 2019-2025</strong><br><br>
     Indice construido con <strong>Claude Sonnet 4-6</strong> (Anthropic, abril 2026) sobre CNO-2015 (INEI).
     Cruce con microdatos ENAHO ponderados por factor de expansion y EPEN departamental anual.
     Universidad del Pacifico - 2026.
@@ -715,7 +655,7 @@ const PLY_LAY = {plot_bgcolor:'#fff',paper_bgcolor:'#fff',font:{family:'Segoe UI
 // ─── S2: TOP OCUPACIONES ─────────────────────────────────────────────────────
 function showTopOcc(year){
   document.querySelectorAll('.year-tab').forEach((t,i)=>{
-    t.classList.toggle('active',[2019,2020,2021,2022,2023,2024][i]===year);
+    t.classList.toggle('active',[2019,2020,2021,2022,2023,2024,2025][i]===year);
   });
   const occs = TOP_OCC_BY_YEAR[String(year)];
   document.getElementById('top-occ-list').innerHTML = occs.map((o,i)=>`
@@ -738,11 +678,11 @@ function showTopOcc(year){
     xaxis:{range:[0,100],ticksuffix:'%',title:'Score de exposicion medio'},
     yaxis:{automargin:true,tickfont:{size:11}}},PLY_CFG);
 }
-showTopOcc(2024);
+showTopOcc(2025);
 
 // ─── S3: BUBBLE ───────────────────────────────────────────────────────────────
 (()=>{
-  const d = BUBBLE_2024;
+  const d = BUBBLE_CURRENT;
   const maxW = Math.max(...d.map(o=>o.workers));
   Plotly.newPlot('chart-bubble',[{
     type:'scatter',mode:'markers',
@@ -766,7 +706,7 @@ showTopOcc(2024);
     const el = document.getElementById('prof-'+s);
     if(!el) return;
     const maxS = 0.55;
-    el.innerHTML = (PROFILES_2024[s]||[]).map(r=>{
+    el.innerHTML = (PROFILES_CURRENT[s]||[]).map(r=>{
       const c = r.mean_exposure>0.4?'#c25b2a':r.mean_exposure>0.25?'#d97706':'#059669';
       return `<div class="prof-row">
         <span>${r.group}</span>
@@ -779,8 +719,8 @@ showTopOcc(2024);
   Plotly.newPlot('chart-profiles',
     Object.keys(colorMap).map(k=>({
       type:'bar',name:labelMap[k],
-      x:(PROFILES_2024[k]||[]).sort((a,b)=>b.mean_exposure-a.mean_exposure).map(r=>r.group),
-      y:(PROFILES_2024[k]||[]).sort((a,b)=>b.mean_exposure-a.mean_exposure).map(r=>+(r.mean_exposure*100).toFixed(2)),
+      x:(PROFILES_CURRENT[k]||[]).sort((a,b)=>b.mean_exposure-a.mean_exposure).map(r=>r.group),
+      y:(PROFILES_CURRENT[k]||[]).sort((a,b)=>b.mean_exposure-a.mean_exposure).map(r=>+(r.mean_exposure*100).toFixed(2)),
       marker:{color:colorMap[k],opacity:0.85},
       hovertemplate:'<b>%{x}</b><br>%{y:.1f}%<extra>'+labelMap[k]+'</extra>',
     })),
@@ -792,7 +732,7 @@ showTopOcc(2024);
 
 // ─── S5: TENDENCIAS ───────────────────────────────────────────────────────────
 (()=>{
-  const yrs=[2019,2020,2021,2022,2023,2024];
+  const yrs=[2019,2020,2021,2022,2023,2024,2025];
   const ramaGroups=[...new Set(Object.values(PROFILES_EVOL.rama).flatMap(v=>v.map(r=>r.group)))];
   Plotly.newPlot('chart-rama-evol',
     ramaGroups.map((g,i)=>({
@@ -806,7 +746,7 @@ showTopOcc(2024);
       legend:{font:{size:10}},hovermode:'x unified'},PLY_CFG);
 
   const eduAll=[...new Set(Object.values(PROFILES_EVOL.educacion).flatMap(v=>v.map(r=>r.group)))];
-  const eduMeans=eduAll.map(g=>({g,m:yrs.map(y=>{const r=(PROFILES_EVOL.educacion[String(y)]||[]).find(x=>x.group===g);return r?r.mean_exposure:0;}).reduce((a,b)=>a+b,0)/6})).sort((a,b)=>b.m-a.m).slice(0,6).map(x=>x.g);
+  const eduMeans=eduAll.map(g=>({g,m:yrs.map(y=>{const r=(PROFILES_EVOL.educacion[String(y)]||[]).find(x=>x.group===g);return r?r.mean_exposure:0;}).reduce((a,b)=>a+b,0)/yrs.length})).sort((a,b)=>b.m-a.m).slice(0,6).map(x=>x.g);
   Plotly.newPlot('chart-edu-evol',
     eduMeans.map((g,i)=>({
       type:'scatter',mode:'lines+markers',name:g.length>28?g.slice(0,28)+'...':g,x:yrs,
@@ -822,7 +762,7 @@ showTopOcc(2024);
 // ─── S6: COMPARATIVO ─────────────────────────────────────────────────────────
 (()=>{
   const buildPair=(sheet,n=2)=>{
-    const r=[...(PROFILES_2024[sheet]||[])].sort((a,b)=>b.mean_exposure-a.mean_exposure);
+    const r=[...(PROFILES_CURRENT[sheet]||[])].sort((a,b)=>b.mean_exposure-a.mean_exposure);
     return {top:r.slice(0,n),bot:r.slice(-n).reverse()};
   };
   const pairs={Educacion:buildPair('educacion',2),Categoria:buildPair('categoria_agregada',2),Rama:buildPair('rama',2),Contrato:buildPair('formalidad_contrato',2)};
@@ -899,28 +839,28 @@ showTopOcc(2024);
 
 // ─── S8: DEPARTAMENTOS ────────────────────────────────────────────────────────
 (()=>{
-  // Bar chart departamentos 2024
-  const reg2024 = REGIONAL_DATA.filter(d=>d.year===2024).sort((a,b)=>b.mean_exposure-a.mean_exposure);
+  // Bar chart departamentos 2025
+  const reg2025 = REGIONAL_DATA.filter(d=>d.year===2025).sort((a,b)=>b.mean_exposure-a.mean_exposure);
   Plotly.newPlot('chart-dept-bar',[{
     type:'bar',orientation:'h',
-    x:reg2024.map(d=>+(d.mean_exposure*100).toFixed(1)).reverse(),
-    y:reg2024.map(d=>d.region_name).reverse(),
+    x:reg2025.map(d=>+(d.mean_exposure*100).toFixed(1)).reverse(),
+    y:reg2025.map(d=>d.region_name).reverse(),
     marker:{
-      color:reg2024.map(d=>+(d.mean_exposure*100).toFixed(1)).reverse(),
+      color:reg2025.map(d=>+(d.mean_exposure*100).toFixed(1)).reverse(),
       colorscale:[['0','#dbeafe'],['0.5','#f97316'],['1','#c25b2a']],
       cmin:22,cmax:32,
       showscale:false,opacity:0.9,
     },
-    text:reg2024.map(d=>fmtPct(d.mean_exposure)).reverse(),
+    text:reg2025.map(d=>fmtPct(d.mean_exposure)).reverse(),
     textposition:'outside',
     hovertemplate:'<b>%{y}</b><br>Exposicion: %{x:.1f}%<extra></extra>',
-  }],{...PLY_LAY,title:{text:'Exposicion media por departamento (2024)',font:{size:14}},
+  }],{...PLY_LAY,title:{text:'Exposicion media por departamento (2025)',font:{size:14}},
     margin:{t:50,r:70,b:40,l:100},
     xaxis:{range:[0,38],ticksuffix:'%',title:'Score exposicion (%)'},
     yaxis:{automargin:true,tickfont:{size:11}}},PLY_CFG);
 
-  // Income by dept 2024
-  const regInc = reg2024.filter(d=>d.income_mean).sort((a,b)=>b.income_mean-a.income_mean);
+  // Income by dept 2025
+  const regInc = reg2025.filter(d=>d.income_mean).sort((a,b)=>b.income_mean-a.income_mean);
   Plotly.newPlot('chart-dept-income',[
     {type:'bar',orientation:'h',name:'Ingreso medio (S/)',
      x:regInc.map(d=>d.income_mean).reverse(),
@@ -929,14 +869,14 @@ showTopOcc(2024);
      text:regInc.map(d=>fmtSol(d.income_mean)).reverse(),textposition:'outside',
      hovertemplate:'<b>%{y}</b><br>Ingreso: S/ %{x:,.0f}<extra></extra>',
     },
-  ],{...PLY_LAY,title:{text:'Ingreso laboral medio por departamento (2024)',font:{size:14}},
+  ],{...PLY_LAY,title:{text:'Ingreso laboral medio por departamento (2025)',font:{size:14}},
     margin:{t:50,r:90,b:40,l:100},
     xaxis:{title:'S/ mensuales',tickformat:',.0f'},
     yaxis:{automargin:true,tickfont:{size:11}}},PLY_CFG);
 
-  // Evolucion exposicion por departamento (2022-2024) — top 8 departamentos
-  const top8depts = reg2024.slice(0,8).map(d=>d.region_code);
-  const years3 = [2022,2023,2024];
+  // Evolucion exposicion por departamento (2022-2025) — top 8 departamentos
+  const top8depts = reg2025.slice(0,8).map(d=>d.region_code);
+  const years3 = [2022,2023,2024,2025];
   Plotly.newPlot('chart-dept-evol',
     top8depts.map((rc,i)=>{
       const name = DEPT_NAMES[String(rc)]||`Region ${rc}`;
@@ -949,13 +889,13 @@ showTopOcc(2024);
         line:{color:COLORS[i%COLORS.length],width:2},marker:{size:7},connectgaps:true,
       };
     }),
-    {...PLY_LAY,title:{text:'Evolucion exposicion - Top 8 departamentos (2022-2024)',font:{size:14}},
+    {...PLY_LAY,title:{text:'Evolucion exposicion - Top 8 departamentos (2022-2025)',font:{size:14}},
       margin:{t:50,r:20,b:40,l:55},xaxis:{tickvals:years3},
       yaxis:{title:'Exposicion (%)',ticksuffix:'%',range:[24,36]},
       legend:{font:{size:10}},hovermode:'x unified'},PLY_CFG);
 
   // Region selector
-  const allRegions = [...new Set(REGIONAL_DATA.filter(d=>d.year===2024).map(d=>d.region_code))].sort((a,b)=>a-b);
+  const allRegions = [...new Set(REGIONAL_DATA.filter(d=>d.year===2025).map(d=>d.region_code))].sort((a,b)=>a-b);
   const selDiv = document.getElementById('region-selector');
   allRegions.forEach(rc=>{
     const btn = document.createElement('button');
@@ -976,7 +916,7 @@ function showRegionOcc(rc){
   const name  = DEPT_NAMES[String(rc)]||`Region ${rc}`;
   const el    = document.getElementById('region-occ-list');
   el.innerHTML = `<div style="font-weight:700;font-size:14px;margin-bottom:12px;color:var(--accent2)">
-    Top ocupaciones expuestas en ${name} (2024)</div>` +
+    Top ocupaciones expuestas en ${name} (2025)</div>` +
     (occs.length ? occs.map((o,i)=>`
     <div class="bar-row">
       <div class="bar-rank">${i+1}</div>
@@ -1053,7 +993,7 @@ function showRegionOcc(rc){
   });
 
   // Comparison chart: alta vs baja
-  const alta = PERSONAS.find(p=>p.tier==='alta'&&p.label.includes('nacional'));
+  const alta = PERSONAS.find(p=>p.tier==='alta');
   const baja = PERSONAS.find(p=>p.tier==='baja');
   if(alta && baja){
     const dims = ['Exposicion media','% Alta exp.','% Augmentation','% Urbano','Ingreso (S/ /100)','Edad'];
@@ -1081,7 +1021,7 @@ function showRegionOcc(rc){
        marker:{color:'#2563eb',opacity:0.7},
        hovertemplate:'<b>%{x}</b>: %{y}<extra>Baja exp.</extra>'},
     ],{...PLY_LAY,barmode:'group',
-      title:{text:'Comparativo: trabajador de alta vs. baja exposicion (Peru 2024)',font:{size:14}},
+      title:{text:'Comparativo: trabajador de alta vs. baja exposicion (Peru 2025)',font:{size:14}},
       margin:{t:50,r:20,b:60,l:60},
       xaxis:{tickfont:{size:12}},
       yaxis:{title:'Valor'},
@@ -1092,7 +1032,7 @@ function showRegionOcc(rc){
 </body>
 </html>"""
 
-out_path = PROJECT_ROOT / "reporte_ia_empleo_peru_2019_2024.html"
+out_path = PROJECT_ROOT / "reporte_ia_empleo_peru_2019_2025.html"
 with open(out_path, "w", encoding="utf-8") as f:
     f.write(HTML)
 

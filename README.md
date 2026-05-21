@@ -4,7 +4,7 @@ Carpeta de entrega ordenada para presentación y preparada para funcionar desde 
 
 ## Qué queda visible
 
-- `reporte_ia_empleo_peru_2019_2024.html`: reporte maestro final para 2019-2024.
+- `reporte_ia_empleo_peru_2019_2025.html`: reporte maestro final para 2019-2025.
 - `notebooks/`: notebooks anuales por año.
 - `notebooks/htmls/`: versión HTML de cada notebook anual, nombrada solo por año.
 
@@ -27,8 +27,6 @@ Carpeta de entrega ordenada para presentación y preparada para funcionar desde 
 - `notebooks/htmls/2023.html`
 - `notebooks/htmls/2024.html`
 - `notebooks/htmls/2025.html`
-
-Nota: el año 2025 fue integrado como notebook/HTML anual y tablas internas. El reporte maestro todavía conserva el corte 2019-2024 hasta que se regenere una versión consolidada 2019-2025.
 
 ## Sobre el prefijo `03`
 

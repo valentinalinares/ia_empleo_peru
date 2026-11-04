@@ -1,0 +1,5 @@
+year,resident_code,panel_key_present,group_rows,missing_rows,missing_pct_of_group,resident_label
+2022,1,True,192416,0,0.0,Residente habitual
+2023,1,True,196595,1113,0.5661385081004094,Residente habitual
+2024,1,True,200630,7778,3.8767881174300953,Residente habitual
+2025,1,True,207407,14399,6.942388636834822,Residente habitual

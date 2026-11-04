@@ -1,0 +1,5 @@
+year,zip_path,zip_sha256,raw_population_rows,raw_population_missing_rows,raw_population_missing_pct,raw_occupied_rows,raw_occupied_missing_rows,raw_occupied_missing_pct,processed_occupied_rows,processed_missing_rows,raw_processed_rows_match,raw_processed_missing_match
+2022,data/raw/inei_data_core/epen_departamentos/2022/156/csv/790-Modulo76.zip,ee64092dcf3d144ddc3a76f5d26af6717dececa2c2bc4a429e42e99157e9e9d2,439523,135536,30.837066547143156,192416,0,0.0,192416,0,True,True
+2023,data/raw/inei_data_core/epen_departamentos/2023/156/csv/874-Modulo76.zip,80b270a27a170af5c27390f5ed9dcdefc2e13b5201ecb982f1bd7cdea705759f,449202,145193,32.3224295528515,196595,1113,0.5661385081004094,196595,1113,True,True
+2024,data/raw/inei_data_core/epen_departamentos/2024/156/csv/935-Modulo76.zip,a33d062bc3f7bdfe86b91f89beadf13b32ad590f384dd79f1d24b79ae25c86e2,465598,165669,35.58198274047569,200630,7778,3.8767881174300953,200630,7778,True,True
+2025,data/raw/inei_data_core/epen_departamentos/2025/156/csv/1001-Modulo76.zip,56892e6aa9749bd1c50be664431cdb0eee5f96295cf3261c44aff735747de830,471438,174097,36.928928088104904,207407,14399,6.942388636834822,207407,14399,True,True

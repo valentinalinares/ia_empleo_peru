@@ -1,7 +1,7 @@
 {
   "generator": "_interno/scripts/build_epen_persona_departamentos.py",
   "output": "_interno/bases/procesadas/epen_persona_departamentos_anual_2022_2025.csv.gz",
-  "output_sha256": "bc907e65e18a506193906d16cfa3408dff72ce29d872cefe5cc7e8c6613cc6a6",
+  "output_sha256": "a1bc01646da96f95bcfbd191eb4bc10eba766b2a4e69d9312969aa27b50e72f5",
   "years": [
     {
       "year": 2022,
@@ -18,9 +18,12 @@
         "occupational_category_code": 0,
         "person_id": 0,
         "relationship_code": 0,
+        "sample_id": 0,
         "strata_code": 0,
         "ubigeo": 192416
       },
+      "duplicate_output_person_key_rows_without_sample": 100,
+      "duplicate_output_person_key_rows_with_sample": 0,
       "person_code_source": "C201",
       "employment_person_code_check": "c300n",
       "person_code_mismatches": 0,
@@ -52,9 +55,12 @@
         "occupational_category_code": 0,
         "person_id": 0,
         "relationship_code": 0,
+        "sample_id": 0,
         "strata_code": 0,
         "ubigeo": 196595
       },
+      "duplicate_output_person_key_rows_without_sample": 174,
+      "duplicate_output_person_key_rows_with_sample": 0,
       "person_code_source": "C201",
       "employment_person_code_check": "c300n",
       "person_code_mismatches": 0,
@@ -86,9 +92,12 @@
         "occupational_category_code": 0,
         "person_id": 0,
         "relationship_code": 0,
+        "sample_id": 0,
         "strata_code": 0,
         "ubigeo": 200630
       },
+      "duplicate_output_person_key_rows_without_sample": 174,
+      "duplicate_output_person_key_rows_with_sample": 0,
       "person_code_source": "C201",
       "employment_person_code_check": "C300n",
       "person_code_mismatches": 0,
@@ -120,9 +129,12 @@
         "occupational_category_code": 0,
         "person_id": 0,
         "relationship_code": 0,
+        "sample_id": 0,
         "strata_code": 261,
         "ubigeo": 207407
       },
+      "duplicate_output_person_key_rows_without_sample": 252,
+      "duplicate_output_person_key_rows_with_sample": 0,
       "person_code_source": "C201",
       "employment_person_code_check": "C300n",
       "person_code_mismatches": 0,
@@ -143,10 +155,11 @@
   "total_occupied_rows": 797048,
   "total_codes_changed_from_legacy_right_padding": 6476,
   "comparison": {
-    "existing": "git:99ead78:_interno/bases/procesadas/epen_persona_departamentos_anual_2022_2025.csv.gz",
+    "existing": "git:99ead78811a0fec9e0407d0199a30acd70d61cba:_interno/bases/procesadas/epen_persona_departamentos_anual_2022_2025.csv.gz",
     "existing_sha256": "25baf308134343f81bf8deb0993703937c73417e2d533776eee91887c3830f8c",
     "rows_compared": 797048,
     "mismatch_by_column": {
+      "sample_id": 797048,
       "strata_code": 796787,
       "person_id": 797048,
       "relationship_code": 797048,
@@ -155,6 +168,7 @@
       "income_periodicity_code": 405813
     },
     "audited_identifier_mismatches": {
+      "sample_id": 797048,
       "strata_code": 796787,
       "person_id": 797048,
       "relationship_code": 797048,

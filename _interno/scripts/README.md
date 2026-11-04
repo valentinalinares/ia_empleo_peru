@@ -11,6 +11,12 @@ Estos scripts quedan operativos dentro de `ia_empleo_peru/_interno` y usan rutas
   codigo original y genera `occupation_code_4d` completando ceros a la
   izquierda. Escribe tambien un manifiesto con huellas SHA-256 y conteos.
 
+Requiere Python 3.10 o superior (usa `zip(..., strict=True)`) y las
+dependencias de `requirements.txt`. Por defecto busca los ZIP en
+`../data/raw/inei_data_core/epen_departamentos/<ano>/*/csv/*-Modulo76.zip`,
+relativo a la carpeta `ia_empleo_peru`; otra ubicacion se indica con
+`--raw-root`.
+
 Ejecutar desde la carpeta `ia_empleo_peru`:
 
 ```text

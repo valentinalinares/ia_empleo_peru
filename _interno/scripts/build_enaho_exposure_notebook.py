@@ -555,7 +555,7 @@ def build_enaho_exposure_notebook(
             )
         comparison_df = pd.DataFrame(comparison_rows).sort_values("gap_exposure", ascending=False).reset_index(drop=True)
 
-        enaho_micro = pd.read_csv(PROCESSED_DIR / "enaho_persona_anual_2019_2024.csv.gz")
+        enaho_micro = pd.read_csv(PROCESSED_DIR / "enaho_persona_anual_2019_2025.csv.gz")
         enaho_micro = enaho_micro[enaho_micro["year"] == ANALYSIS_YEAR].copy()
         enaho_micro["weight"] = pd.to_numeric(enaho_micro["weight"], errors="coerce")
         enaho_micro["labor_income_monthly"] = pd.to_numeric(enaho_micro["labor_income_monthly"], errors="coerce")

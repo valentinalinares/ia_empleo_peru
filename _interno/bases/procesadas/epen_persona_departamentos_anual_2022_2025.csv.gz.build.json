@@ -1,7 +1,7 @@
 {
   "generator": "_interno/scripts/build_epen_persona_departamentos.py",
   "output": "_interno/bases/procesadas/epen_persona_departamentos_anual_2022_2025.csv.gz",
-  "output_sha256": "25baf308134343f81bf8deb0993703937c73417e2d533776eee91887c3830f8c",
+  "output_sha256": "bc907e65e18a506193906d16cfa3408dff72ce29d872cefe5cc7e8c6613cc6a6",
   "years": [
     {
       "year": 2022,
@@ -10,7 +10,32 @@
       "raw_rows": 439523,
       "occupied_rows": 192416,
       "codes_changed_from_legacy_right_padding": 1650,
-      "invalid_or_missing_occupation_codes": 0
+      "invalid_or_missing_occupation_codes": 0,
+      "identifier_missing_counts": {
+        "domain_code": 192416,
+        "firm_size_code": 1692,
+        "income_periodicity_code": 94736,
+        "occupational_category_code": 0,
+        "person_id": 0,
+        "relationship_code": 0,
+        "strata_code": 0,
+        "ubigeo": 192416
+      },
+      "person_code_source": "C201",
+      "employment_person_code_check": "c300n",
+      "person_code_mismatches": 0,
+      "duplicate_person_key_rows_without_sample": 100,
+      "duplicate_person_key_rows_with_sample": 0,
+      "monthly_sample_clusters_with_multiple_strata": 0,
+      "missing_identifier_key_parts": {
+        "ANIO": 0,
+        "MES": 0,
+        "MUESTRA": 0,
+        "CONGLOMERADO": 0,
+        "SELVIV": 0,
+        "HOGAR": 0,
+        "C201": 0
+      }
     },
     {
       "year": 2023,
@@ -19,7 +44,32 @@
       "raw_rows": 449202,
       "occupied_rows": 196595,
       "codes_changed_from_legacy_right_padding": 1694,
-      "invalid_or_missing_occupation_codes": 0
+      "invalid_or_missing_occupation_codes": 0,
+      "identifier_missing_counts": {
+        "domain_code": 196595,
+        "firm_size_code": 1726,
+        "income_periodicity_code": 97461,
+        "occupational_category_code": 0,
+        "person_id": 0,
+        "relationship_code": 0,
+        "strata_code": 0,
+        "ubigeo": 196595
+      },
+      "person_code_source": "C201",
+      "employment_person_code_check": "c300n",
+      "person_code_mismatches": 0,
+      "duplicate_person_key_rows_without_sample": 174,
+      "duplicate_person_key_rows_with_sample": 0,
+      "monthly_sample_clusters_with_multiple_strata": 0,
+      "missing_identifier_key_parts": {
+        "ANIO": 0,
+        "MES": 0,
+        "MUESTRA": 0,
+        "CONGLOMERADO": 0,
+        "SELVIV": 0,
+        "HOGAR": 0,
+        "C201": 0
+      }
     },
     {
       "year": 2024,
@@ -28,7 +78,32 @@
       "raw_rows": 465598,
       "occupied_rows": 200630,
       "codes_changed_from_legacy_right_padding": 1613,
-      "invalid_or_missing_occupation_codes": 0
+      "invalid_or_missing_occupation_codes": 0,
+      "identifier_missing_counts": {
+        "domain_code": 200630,
+        "firm_size_code": 0,
+        "income_periodicity_code": 98759,
+        "occupational_category_code": 0,
+        "person_id": 0,
+        "relationship_code": 0,
+        "strata_code": 0,
+        "ubigeo": 200630
+      },
+      "person_code_source": "C201",
+      "employment_person_code_check": "C300n",
+      "person_code_mismatches": 0,
+      "duplicate_person_key_rows_without_sample": 170,
+      "duplicate_person_key_rows_with_sample": 0,
+      "monthly_sample_clusters_with_multiple_strata": 0,
+      "missing_identifier_key_parts": {
+        "ANIO": 0,
+        "MES": 0,
+        "MUESTRA": 0,
+        "CONGLOMERADO": 0,
+        "SELVIV": 0,
+        "HOGAR": 0,
+        "C201": 0
+      }
     },
     {
       "year": 2025,
@@ -37,19 +112,57 @@
       "raw_rows": 471438,
       "occupied_rows": 207407,
       "codes_changed_from_legacy_right_padding": 1519,
-      "invalid_or_missing_occupation_codes": 0
+      "invalid_or_missing_occupation_codes": 0,
+      "identifier_missing_counts": {
+        "domain_code": 207407,
+        "firm_size_code": 0,
+        "income_periodicity_code": 100279,
+        "occupational_category_code": 0,
+        "person_id": 0,
+        "relationship_code": 0,
+        "strata_code": 261,
+        "ubigeo": 207407
+      },
+      "person_code_source": "C201",
+      "employment_person_code_check": "C300n",
+      "person_code_mismatches": 0,
+      "duplicate_person_key_rows_without_sample": 246,
+      "duplicate_person_key_rows_with_sample": 0,
+      "monthly_sample_clusters_with_multiple_strata": 0,
+      "missing_identifier_key_parts": {
+        "ANIO": 0,
+        "MES": 0,
+        "MUESTRA": 0,
+        "CONGLOMERADO": 0,
+        "SELVIV": 0,
+        "HOGAR": 0,
+        "C201": 0
+      }
     }
   ],
   "total_occupied_rows": 797048,
   "total_codes_changed_from_legacy_right_padding": 6476,
   "comparison": {
-    "existing": "git:5e6ee89ce26d061bae571f4353d88dbc65f75c36:_interno/bases/procesadas/epen_persona_departamentos_anual_2022_2025.csv.gz",
-    "existing_sha256": "570c25291c252a607aa89163b8954d2325ee9ebbb488fcf4e4bae0966d258a8a",
+    "existing": "git:99ead78:_interno/bases/procesadas/epen_persona_departamentos_anual_2022_2025.csv.gz",
+    "existing_sha256": "25baf308134343f81bf8deb0993703937c73417e2d533776eee91887c3830f8c",
     "rows_compared": 797048,
     "mismatch_by_column": {
-      "occupation_code_4d": 6476
+      "strata_code": 796787,
+      "person_id": 797048,
+      "relationship_code": 797048,
+      "occupational_category_code": 797048,
+      "firm_size_code": 793630,
+      "income_periodicity_code": 405813
     },
-    "non_code_mismatches": {},
+    "audited_identifier_mismatches": {
+      "strata_code": 796787,
+      "person_id": 797048,
+      "relationship_code": 797048,
+      "occupational_category_code": 797048,
+      "firm_size_code": 793630,
+      "income_periodicity_code": 405813
+    },
+    "unexpected_mismatches": {},
     "unexpected_code_rows": 0
   }
 }

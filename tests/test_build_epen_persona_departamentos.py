@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import io
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -12,6 +13,10 @@ import pandas as pd
 SCRIPT = (
     Path(__file__).resolve().parents[1]
     / "_interno/scripts/build_epen_persona_departamentos.py"
+)
+OUTPUT = (
+    Path(__file__).resolve().parents[1]
+    / "_interno/bases/procesadas/epen_persona_departamentos_anual_2022_2025.csv.gz"
 )
 SPEC = importlib.util.spec_from_file_location("build_epen_persona_departamentos", SCRIPT)
 MODULE = importlib.util.module_from_spec(SPEC)
@@ -69,6 +74,9 @@ class OccupationCodeTests(unittest.TestCase):
 
         self.assertEqual(len(result), 2)
         self.assertEqual(result.loc[0, "sample_id"], 1)
+        self.assertEqual(result.loc[0, "cluster_id"], "0001")
+        self.assertEqual(result.loc[0, "dwelling_id"], "001")
+        self.assertEqual(result.loc[0, "household_id"], "1")
         self.assertEqual(result.loc[0, "occupation_code_raw"], 212)
         self.assertEqual(result.loc[0, "occupation_code_4d"], "0212")
         self.assertEqual(result.loc[0, "strata_code"], 2)
@@ -131,12 +139,49 @@ class OccupationCodeTests(unittest.TestCase):
             "year",
             "month",
             "sample_id",
+            "region_code",
             "cluster_id",
             "dwelling_id",
             "household_id",
             "person_id",
         ]
         self.assertFalse(result.duplicated(output_key).any())
+
+
+class OutputDatasetTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.key_columns = [
+            "year",
+            "month",
+            "sample_id",
+            "region_code",
+            "cluster_id",
+            "dwelling_id",
+            "household_id",
+            "person_id",
+        ]
+        cls.output = pd.read_csv(OUTPUT, dtype=str, usecols=cls.key_columns + ["strata_code"])
+        cls.manifest = json.loads(
+            Path(f"{OUTPUT}.build.json").read_text(encoding="utf-8")
+        )
+
+    def test_each_output_upm_has_one_stratum(self) -> None:
+        upm = ["year", "month", "sample_id", "region_code", "cluster_id"]
+        counts = self.output.groupby(upm, dropna=False)["strata_code"].nunique(
+            dropna=False
+        )
+        self.assertFalse((counts > 1).any())
+
+    def test_output_person_key_is_unique(self) -> None:
+        self.assertFalse(self.output.duplicated(self.key_columns).any())
+
+    def test_text_identifiers_match_original_values(self) -> None:
+        for year in self.manifest["years"]:
+            self.assertEqual(
+                year["text_identifier_mismatches"],
+                {"cluster_id": 0, "dwelling_id": 0, "household_id": 0},
+            )
 
     def test_comparison_allows_only_audited_identifier_columns(self) -> None:
         old_columns = [

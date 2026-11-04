@@ -62,9 +62,6 @@ NUMERIC_MAP = {
     "region_code": "CCDD",
     "sample_id": "MUESTRA",
     "strata_code": "ESTRATO",
-    "cluster_id": "CONGLOMERADO",
-    "dwelling_id": "SELVIV",
-    "household_id": "HOGAR",
     "person_id": "C201",
     "relationship_code": "C203",
     "sex_code": "C207",
@@ -84,11 +81,20 @@ NUMERIC_MAP = {
     "area_raw": "AREA",
 }
 
+TEXT_IDENTIFIER_MAP = {
+    "cluster_id": "CONGLOMERADO",
+    "dwelling_id": "SELVIV",
+    "household_id": "HOGAR",
+}
+
 AUDITED_IDENTIFIER_COLUMNS = {
     "ubigeo",
     "domain_code",
     "sample_id",
     "strata_code",
+    "cluster_id",
+    "dwelling_id",
+    "household_id",
     "person_id",
     "relationship_code",
     "occupational_category_code",
@@ -106,7 +112,7 @@ NULLABLE_INTEGER_CODE_COLUMNS = {
     "income_periodicity_code",
 }
 
-REQUIRED_RAW_COLUMNS = set(NUMERIC_MAP.values()) | {
+REQUIRED_RAW_COLUMNS = set(NUMERIC_MAP.values()) | set(TEXT_IDENTIFIER_MAP.values()) | {
     "MUESTRA",
     "OCUP300",
     "C308_COD",
@@ -218,11 +224,14 @@ def audit_identifier_consistency(occupied: pd.DataFrame) -> dict[str, object]:
         )
 
     cluster = occupied[
-        ["ANIO", "MES", "MUESTRA", "CONGLOMERADO", "ESTRATO"]
+        ["ANIO", "MES", "MUESTRA", "CCDD", "CONGLOMERADO", "ESTRATO"]
     ].apply(clean_series)
     monthly_cluster_strata = (
         cluster.drop_duplicates()
-        .groupby(["ANIO", "MES", "MUESTRA", "CONGLOMERADO"], dropna=False)["ESTRATO"]
+        .groupby(
+            ["ANIO", "MES", "MUESTRA", "CCDD", "CONGLOMERADO"],
+            dropna=False,
+        )["ESTRATO"]
         .nunique(dropna=False)
     )
     clusters_with_multiple_strata = int((monthly_cluster_strata > 1).sum())
@@ -268,6 +277,8 @@ def build_occupied(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, object]]:
         if target in NULLABLE_INTEGER_CODE_COLUMNS:
             values = values.astype("Int64")
         output[target] = values
+    for target, source in TEXT_IDENTIFIER_MAP.items():
+        output[target] = occupied[source].astype("string")
 
     raw_codes = occupied["C308_COD"]
     output["occupation_code_4d"] = raw_codes.map(normalise_cno_code).astype("string")
@@ -288,6 +299,7 @@ def build_occupied(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, object]]:
         "year",
         "month",
         "sample_id",
+        "region_code",
         "cluster_id",
         "dwelling_id",
         "household_id",
@@ -308,6 +320,33 @@ def build_occupied(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, object]]:
             f"{duplicate_output_rows_with_sample} rows"
         )
 
+    upm_columns = ["year", "month", "sample_id", "region_code", "cluster_id"]
+    output_upm_strata = output[upm_columns + ["strata_code"]].drop_duplicates()
+    output_upm_strata_counts = output_upm_strata.groupby(
+        upm_columns, dropna=False
+    )["strata_code"].nunique(dropna=False)
+    output_upms_with_multiple_strata = int((output_upm_strata_counts > 1).sum())
+    if output_upms_with_multiple_strata:
+        raise ValueError(
+            "Processed sample-region-cluster maps to multiple strata: "
+            f"{output_upms_with_multiple_strata}"
+        )
+
+    text_identifier_mismatches = {
+        target: int(
+            output[target]
+            .fillna("<NA>")
+            .ne(occupied[source].astype("string").fillna("<NA>"))
+            .sum()
+        )
+        for target, source in TEXT_IDENTIFIER_MAP.items()
+    }
+    if any(text_identifier_mismatches.values()):
+        raise ValueError(
+            "Processed text identifiers differ from their raw values: "
+            f"{text_identifier_mismatches}"
+        )
+
     audit = {
         "raw_rows": int(len(df)),
         "occupied_rows": int(len(output)),
@@ -321,6 +360,10 @@ def build_occupied(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, object]]:
             duplicate_output_rows_without_sample
         ),
         "duplicate_output_person_key_rows_with_sample": duplicate_output_rows_with_sample,
+        "output_sample_region_clusters_with_multiple_strata": (
+            output_upms_with_multiple_strata
+        ),
+        "text_identifier_mismatches": text_identifier_mismatches,
         **identifier_audit,
     }
     return output[OUTPUT_COLUMNS].reset_index(drop=True), audit

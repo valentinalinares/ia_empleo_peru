@@ -11,6 +11,7 @@ descrito por el INEI.
 
 | Columna procesada | Variable original | 2022 | 2023 | 2024 | 2025 | Decisión |
 |---|---|---:|---:|---:|---:|---|
+| `sample_id` | `MUESTRA` | p. 2 | p. 2 | p. 2 | p. 2 | Identificador de muestra. Se exporta de forma explícita para distinguir claves reutilizadas; no se interpreta como dominio estadístico. |
 | `strata_code` | `ESTRATO` | p. 2 | p. 2 | p. 2 | p. 2 | Se conserva el estrato poblacional publicado. No constituye por sí solo la especificación completa del diseño muestral. |
 | `person_id` | `C201` | p. 2* | p. 2 | p. 2 | p. 2 | Número de orden de la persona. En 2022 el diccionario lo rotula `PERS_NRO`, mientras el CSV lo entrega como `C201`; coincide exactamente con `c300n` en las 192.416 filas ocupadas. |
 | `relationship_code` | `C203` | p. 2 | p. 2 | p. 2 | p. 2 | Relación de parentesco con el jefe del hogar. |
@@ -33,7 +34,8 @@ operación 156 guardados en
 | 2024 | 200.630 | 0 | 0 | 98.759 |
 | 2025 | 207.407 | 261 | 0 | 100.279 |
 
-`person_id`, `relationship_code` y `occupational_category_code` no tienen
+`sample_id`, `person_id`, `relationship_code` y
+`occupational_category_code` no tienen
 faltantes entre los ocupados. No se imputan los valores ausentes de las otras
 variables.
 
@@ -41,10 +43,13 @@ variables.
 
 - `C201` coincide con `c300n`/`C300n` en las 797.048 filas ocupadas.
 - La clave persona formada por año, mes, `MUESTRA`, conglomerado, vivienda,
-  hogar y `C201` no tiene duplicados.
-- Si se omite `MUESTRA`, 690 filas participan en colisiones de clave: 100 en
-  2022, 174 en 2023, 170 en 2024 y 246 en 2025. Por eso no se afirma que las
-  columnas procesadas actuales identifiquen por sí solas una persona.
+  hogar y `C201` no tiene duplicados. En la salida, `MUESTRA` se conserva como
+  `sample_id`, y la clave procesada equivalente también es única.
+- Si se omite `MUESTRA`, 690 filas de los datos originales participan en
+  colisiones de clave: 100 en 2022, 174 en 2023, 170 en 2024 y 246 en 2025.
+  En la base procesada anterior, la clave normalizada sin `sample_id` producía
+  700 filas en colisión. La diferencia se debe a que la normalización numérica
+  reúne algunas representaciones distintas de los identificadores originales.
 - Cada combinación de año, mes, `MUESTRA` y conglomerado tiene un solo valor
   de `ESTRATO`. En 2025 existen 39 códigos de conglomerado que cambian de
   estrato entre meses; el control no debe aplicarse globalmente sin periodo.

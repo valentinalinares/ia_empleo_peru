@@ -28,6 +28,7 @@ OUTPUT_COLUMNS = [
     "region_code",
     "ubigeo",
     "domain_code",
+    "sample_id",
     "strata_code",
     "cluster_id",
     "dwelling_id",
@@ -59,6 +60,7 @@ NUMERIC_MAP = {
     "year": "ANIO",
     "month": "MES",
     "region_code": "CCDD",
+    "sample_id": "MUESTRA",
     "strata_code": "ESTRATO",
     "cluster_id": "CONGLOMERADO",
     "dwelling_id": "SELVIV",
@@ -85,6 +87,17 @@ NUMERIC_MAP = {
 AUDITED_IDENTIFIER_COLUMNS = {
     "ubigeo",
     "domain_code",
+    "sample_id",
+    "strata_code",
+    "person_id",
+    "relationship_code",
+    "occupational_category_code",
+    "firm_size_code",
+    "income_periodicity_code",
+}
+
+NULLABLE_INTEGER_CODE_COLUMNS = {
+    "sample_id",
     "strata_code",
     "person_id",
     "relationship_code",
@@ -162,9 +175,9 @@ def clean_series(series: pd.Series) -> pd.Series:
 def audit_identifier_consistency(occupied: pd.DataFrame) -> dict[str, object]:
     """Validate documented identifier relationships in the raw module.
 
-    MUESTRA is required to disambiguate reused conglomerate/dwelling numbers,
-    but it is not written to domain_code because the official dictionary calls
-    it a sample identifier, not a statistical domain.
+    MUESTRA is required to disambiguate reused conglomerate/dwelling numbers.
+    It is exported as sample_id, not domain_code, because the official
+    dictionary calls it a sample identifier rather than a statistical domain.
     """
     employment_person_column = next(
         (column for column in ("C300n", "c300n") if column in occupied.columns),
@@ -251,7 +264,10 @@ def build_occupied(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, object]]:
     output["survey_variant"] = "departamentos_anual"
     output["period_label"] = "Anual - (Ene-Dic)"
     for target, source in NUMERIC_MAP.items():
-        output[target] = pd.to_numeric(occupied[source], errors="coerce")
+        values = pd.to_numeric(occupied[source], errors="coerce")
+        if target in NULLABLE_INTEGER_CODE_COLUMNS:
+            values = values.astype("Int64")
+        output[target] = values
 
     raw_codes = occupied["C308_COD"]
     output["occupation_code_4d"] = raw_codes.map(normalise_cno_code).astype("string")
@@ -268,6 +284,30 @@ def build_occupied(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, object]]:
         if column not in output:
             output[column] = pd.NA
 
+    output_key_columns = [
+        "year",
+        "month",
+        "sample_id",
+        "cluster_id",
+        "dwelling_id",
+        "household_id",
+        "person_id",
+    ]
+    output_key_without_sample = [
+        column for column in output_key_columns if column != "sample_id"
+    ]
+    duplicate_output_rows_without_sample = int(
+        output.duplicated(output_key_without_sample, keep=False).sum()
+    )
+    duplicate_output_rows_with_sample = int(
+        output.duplicated(output_key_columns, keep=False).sum()
+    )
+    if duplicate_output_rows_with_sample:
+        raise ValueError(
+            "Processed person key is not unique after including sample_id: "
+            f"{duplicate_output_rows_with_sample} rows"
+        )
+
     audit = {
         "raw_rows": int(len(df)),
         "occupied_rows": int(len(output)),
@@ -277,6 +317,10 @@ def build_occupied(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, object]]:
             column: int(output[column].isna().sum())
             for column in sorted(AUDITED_IDENTIFIER_COLUMNS)
         },
+        "duplicate_output_person_key_rows_without_sample": (
+            duplicate_output_rows_without_sample
+        ),
+        "duplicate_output_person_key_rows_with_sample": duplicate_output_rows_with_sample,
         **identifier_audit,
     }
     return output[OUTPUT_COLUMNS].reset_index(drop=True), audit
@@ -305,6 +349,11 @@ def compare_datasets(existing: Path, regenerated: Path) -> dict[str, object]:
     old_reader = pd.read_csv(existing, dtype=str, chunksize=100_000)
     new_reader = pd.read_csv(regenerated, dtype=str, chunksize=100_000)
     for old, new in zip(old_reader, new_reader, strict=True):
+        old_columns_without_sample = [
+            column for column in OUTPUT_COLUMNS if column != "sample_id"
+        ]
+        if list(old.columns) == old_columns_without_sample:
+            old.insert(8, "sample_id", pd.NA)
         if list(old.columns) != OUTPUT_COLUMNS or list(new.columns) != OUTPUT_COLUMNS:
             raise ValueError("Existing or regenerated output has an unexpected schema")
         if len(old) != len(new):

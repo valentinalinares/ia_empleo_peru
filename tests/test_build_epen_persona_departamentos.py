@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import importlib.util
+import io
 import tempfile
 import unittest
 from pathlib import Path
@@ -32,7 +33,7 @@ class OccupationCodeTests(unittest.TestCase):
         self.assertTrue(pd.isna(MODULE.normalise_cno_code("12345")))
         self.assertTrue(pd.isna(MODULE.normalise_cno_code(None)))
 
-    def test_build_occupied_uses_raw_code_and_filters_occupied_people(self) -> None:
+    def test_build_occupied_uses_raw_code_and_integer_code_serialization(self) -> None:
         raw = pd.DataFrame(
             {
                 "ANIO": ["2024", "2024"],
@@ -48,7 +49,7 @@ class OccupationCodeTests(unittest.TestCase):
                 "C203": ["1", "2"],
                 "C207": ["1", "2"],
                 "C208": ["30", "40"],
-                "OCUP300": ["1", "4"],
+                "OCUP300": ["1", "1"],
                 "C308_COD": ["212", "2120"],
                 "C310": ["3", "3"],
                 "C317": ["5", ""],
@@ -66,7 +67,8 @@ class OccupationCodeTests(unittest.TestCase):
 
         result, audit = MODULE.build_occupied(raw)
 
-        self.assertEqual(len(result), 1)
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result.loc[0, "sample_id"], 1)
         self.assertEqual(result.loc[0, "occupation_code_raw"], 212)
         self.assertEqual(result.loc[0, "occupation_code_4d"], "0212")
         self.assertEqual(result.loc[0, "strata_code"], 2)
@@ -79,6 +81,13 @@ class OccupationCodeTests(unittest.TestCase):
         self.assertTrue(pd.isna(result.loc[0, "domain_code"]))
         self.assertEqual(audit["codes_changed_from_legacy_right_padding"], 1)
         self.assertEqual(audit["person_code_mismatches"], 0)
+
+        serialized = io.StringIO()
+        result.to_csv(serialized, index=False)
+        text_result = pd.read_csv(io.StringIO(serialized.getvalue()), dtype=str)
+        for column in MODULE.NULLABLE_INTEGER_CODE_COLUMNS:
+            values = text_result[column].dropna()
+            self.assertFalse(values.str.endswith(".0").any(), column)
 
     def test_sample_disambiguates_reused_person_keys(self) -> None:
         raw = pd.DataFrame(
@@ -112,17 +121,33 @@ class OccupationCodeTests(unittest.TestCase):
             }
         )
 
-        _, audit = MODULE.build_occupied(raw)
+        result, audit = MODULE.build_occupied(raw)
 
         self.assertEqual(audit["duplicate_person_key_rows_without_sample"], 2)
         self.assertEqual(audit["duplicate_person_key_rows_with_sample"], 0)
+        self.assertEqual(audit["duplicate_output_person_key_rows_without_sample"], 2)
+        self.assertEqual(audit["duplicate_output_person_key_rows_with_sample"], 0)
+        output_key = [
+            "year",
+            "month",
+            "sample_id",
+            "cluster_id",
+            "dwelling_id",
+            "household_id",
+            "person_id",
+        ]
+        self.assertFalse(result.duplicated(output_key).any())
 
     def test_comparison_allows_only_audited_identifier_columns(self) -> None:
-        base = pd.DataFrame([{column: pd.NA for column in MODULE.OUTPUT_COLUMNS}])
+        old_columns = [
+            column for column in MODULE.OUTPUT_COLUMNS if column != "sample_id"
+        ]
+        base = pd.DataFrame([{column: pd.NA for column in old_columns}])
         base.loc[0, "source"] = "EPEN"
         base.loc[0, "occupation_code_raw"] = 212
         base.loc[0, "occupation_code_4d"] = "0212"
         regenerated = base.copy()
+        regenerated.insert(8, "sample_id", 1)
         regenerated.loc[0, "strata_code"] = 2
         regenerated.loc[0, "person_id"] = 1
 
@@ -135,7 +160,7 @@ class OccupationCodeTests(unittest.TestCase):
             audit = MODULE.compare_datasets(old_path, new_path)
             self.assertEqual(
                 audit["audited_identifier_mismatches"],
-                {"strata_code": 1, "person_id": 1},
+                {"sample_id": 1, "strata_code": 1, "person_id": 1},
             )
             self.assertEqual(audit["unexpected_mismatches"], {})
 

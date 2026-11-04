@@ -6,6 +6,17 @@ Estos scripts quedan operativos dentro de `ia_empleo_peru/_interno` y usan rutas
 - `build_enaho_exposure_notebook.py`: genera el notebook anual final alineado con el HTML maestro y exporta tablas auxiliares por ano.
 - `generate_enaho_exposure_year_reports.py`: genera notebooks y reportes anuales por ano.
 - `generar_reporte_html.py`: reconstruye `reporte_ia_empleo_peru_2019_2024.html` usando solo insumos dentro de esta carpeta.
+- `build_epen_persona_departamentos.py`: reconstruye la base anual de personas
+  ocupadas EPEN 2022-2025 desde los ZIP oficiales del modulo 76. Conserva el
+  codigo original y genera `occupation_code_4d` completando ceros a la
+  izquierda. Escribe tambien un manifiesto con huellas SHA-256 y conteos.
+
+Ejecutar desde la carpeta `ia_empleo_peru`:
+
+```text
+python _interno/scripts/build_epen_persona_departamentos.py
+python -m unittest tests/test_build_epen_persona_departamentos.py
+```
 
 ## Nota
 

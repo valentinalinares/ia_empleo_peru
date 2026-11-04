@@ -24,6 +24,10 @@ python _interno/scripts/build_epen_persona_departamentos.py
 python -m unittest tests/test_build_epen_persona_departamentos.py
 ```
 
+El mapeo auditado de identificadores EPEN, sus fuentes por año y las
+limitaciones de `ubigeo`, dominio y `MUESTRA` están documentados en
+`_interno/docs/epen_departamentos_identificadores.md`.
+
 ## Nota
 
 Para rerun del bundle hacen falta:

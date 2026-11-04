@@ -28,6 +28,7 @@ OUTPUT_COLUMNS = [
     "region_code",
     "ubigeo",
     "domain_code",
+    "sample_id",
     "strata_code",
     "cluster_id",
     "dwelling_id",
@@ -59,14 +60,18 @@ NUMERIC_MAP = {
     "year": "ANIO",
     "month": "MES",
     "region_code": "CCDD",
-    "cluster_id": "CONGLOMERADO",
-    "dwelling_id": "SELVIV",
-    "household_id": "HOGAR",
+    "sample_id": "MUESTRA",
+    "strata_code": "ESTRATO",
+    "person_id": "C201",
+    "relationship_code": "C203",
     "sex_code": "C207",
     "age": "C208",
     "labor_status_code": "OCUP300",
     "occupation_code_raw": "C308_COD",
+    "occupational_category_code": "C310",
+    "firm_size_code": "C317",
     "hours_week": "C318_T",
+    "income_periodicity_code": "C338",
     "labor_income_raw": "INGTOT",
     "labor_income_monthly": "INGTOTP",
     "weight": "FAC300_ANUAL",
@@ -76,7 +81,42 @@ NUMERIC_MAP = {
     "area_raw": "AREA",
 }
 
-REQUIRED_RAW_COLUMNS = set(NUMERIC_MAP.values()) | {"OCUP300", "C308_COD"}
+TEXT_IDENTIFIER_MAP = {
+    "cluster_id": "CONGLOMERADO",
+    "dwelling_id": "SELVIV",
+    "household_id": "HOGAR",
+}
+
+AUDITED_IDENTIFIER_COLUMNS = {
+    "ubigeo",
+    "domain_code",
+    "sample_id",
+    "strata_code",
+    "cluster_id",
+    "dwelling_id",
+    "household_id",
+    "person_id",
+    "relationship_code",
+    "occupational_category_code",
+    "firm_size_code",
+    "income_periodicity_code",
+}
+
+NULLABLE_INTEGER_CODE_COLUMNS = {
+    "sample_id",
+    "strata_code",
+    "person_id",
+    "relationship_code",
+    "occupational_category_code",
+    "firm_size_code",
+    "income_periodicity_code",
+}
+
+REQUIRED_RAW_COLUMNS = set(NUMERIC_MAP.values()) | set(TEXT_IDENTIFIER_MAP.values()) | {
+    "MUESTRA",
+    "OCUP300",
+    "C308_COD",
+}
 
 
 def sha256(path: Path) -> str:
@@ -134,20 +174,111 @@ def read_zip(path: Path) -> pd.DataFrame:
             return pd.read_csv(stream, dtype=str, encoding="utf-8-sig", low_memory=False)
 
 
-def build_occupied(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, int]]:
+def clean_series(series: pd.Series) -> pd.Series:
+    return series.astype("string").str.strip().str.replace(r"\.0+$", "", regex=True)
+
+
+def audit_identifier_consistency(occupied: pd.DataFrame) -> dict[str, object]:
+    """Validate documented identifier relationships in the raw module.
+
+    MUESTRA is required to disambiguate reused conglomerate/dwelling numbers.
+    It is exported as sample_id, not domain_code, because the official
+    dictionary calls it a sample identifier rather than a statistical domain.
+    """
+    employment_person_column = next(
+        (column for column in ("C300n", "c300n") if column in occupied.columns),
+        None,
+    )
+    if employment_person_column is None:
+        raise ValueError("Missing employment-module person code C300n/c300n")
+
+    person = clean_series(occupied["C201"])
+    employment_person = clean_series(occupied[employment_person_column])
+    person_code_mismatches = int(
+        person.fillna("<NA>").ne(employment_person.fillna("<NA>")).sum()
+    )
+    if person_code_mismatches:
+        raise ValueError(
+            f"C201 differs from {employment_person_column} in "
+            f"{person_code_mismatches} occupied rows"
+        )
+
+    key_columns = [
+        "ANIO",
+        "MES",
+        "CONGLOMERADO",
+        "SELVIV",
+        "HOGAR",
+        "C201",
+    ]
+    key = occupied[key_columns].apply(clean_series)
+    key_with_sample = occupied[["ANIO", "MES", "MUESTRA", *key_columns[2:]]].apply(
+        clean_series
+    )
+    duplicate_rows_without_sample = int(key.duplicated(keep=False).sum())
+    duplicate_rows_with_sample = int(key_with_sample.duplicated(keep=False).sum())
+    if duplicate_rows_with_sample:
+        raise ValueError(
+            "Person key is not unique even after including MUESTRA: "
+            f"{duplicate_rows_with_sample} rows"
+        )
+
+    cluster = occupied[
+        ["ANIO", "MES", "MUESTRA", "CCDD", "CONGLOMERADO", "ESTRATO"]
+    ].apply(clean_series)
+    monthly_cluster_strata = (
+        cluster.drop_duplicates()
+        .groupby(
+            ["ANIO", "MES", "MUESTRA", "CCDD", "CONGLOMERADO"],
+            dropna=False,
+        )["ESTRATO"]
+        .nunique(dropna=False)
+    )
+    clusters_with_multiple_strata = int((monthly_cluster_strata > 1).sum())
+    if clusters_with_multiple_strata:
+        raise ValueError(
+            "A monthly sample-conglomerate maps to multiple strata: "
+            f"{clusters_with_multiple_strata}"
+        )
+
+    missing_key_parts = {
+        column: int(key_with_sample[column].isna().sum())
+        for column in key_with_sample.columns
+    }
+    if any(missing_key_parts.values()):
+        raise ValueError(f"Missing identifier key components: {missing_key_parts}")
+
+    return {
+        "person_code_source": "C201",
+        "employment_person_code_check": employment_person_column,
+        "person_code_mismatches": person_code_mismatches,
+        "duplicate_person_key_rows_without_sample": duplicate_rows_without_sample,
+        "duplicate_person_key_rows_with_sample": duplicate_rows_with_sample,
+        "monthly_sample_clusters_with_multiple_strata": clusters_with_multiple_strata,
+        "missing_identifier_key_parts": missing_key_parts,
+    }
+
+
+def build_occupied(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, object]]:
     missing = sorted(REQUIRED_RAW_COLUMNS - set(df.columns))
     if missing:
         raise ValueError(f"Missing required raw columns: {missing}")
 
     occupied_mask = df["OCUP300"].map(clean_code).eq("1")
     occupied = df.loc[occupied_mask].copy()
+    identifier_audit = audit_identifier_consistency(occupied)
     output = pd.DataFrame(index=occupied.index)
 
     output["source"] = "EPEN"
     output["survey_variant"] = "departamentos_anual"
     output["period_label"] = "Anual - (Ene-Dic)"
     for target, source in NUMERIC_MAP.items():
-        output[target] = pd.to_numeric(occupied[source], errors="coerce")
+        values = pd.to_numeric(occupied[source], errors="coerce")
+        if target in NULLABLE_INTEGER_CODE_COLUMNS:
+            values = values.astype("Int64")
+        output[target] = values
+    for target, source in TEXT_IDENTIFIER_MAP.items():
+        output[target] = occupied[source].astype("string")
 
     raw_codes = occupied["C308_COD"]
     output["occupation_code_4d"] = raw_codes.map(normalise_cno_code).astype("string")
@@ -164,11 +295,76 @@ def build_occupied(df: pd.DataFrame) -> tuple[pd.DataFrame, dict[str, int]]:
         if column not in output:
             output[column] = pd.NA
 
+    output_key_columns = [
+        "year",
+        "month",
+        "sample_id",
+        "region_code",
+        "cluster_id",
+        "dwelling_id",
+        "household_id",
+        "person_id",
+    ]
+    output_key_without_sample = [
+        column for column in output_key_columns if column != "sample_id"
+    ]
+    duplicate_output_rows_without_sample = int(
+        output.duplicated(output_key_without_sample, keep=False).sum()
+    )
+    duplicate_output_rows_with_sample = int(
+        output.duplicated(output_key_columns, keep=False).sum()
+    )
+    if duplicate_output_rows_with_sample:
+        raise ValueError(
+            "Processed person key is not unique after including sample_id: "
+            f"{duplicate_output_rows_with_sample} rows"
+        )
+
+    upm_columns = ["year", "month", "sample_id", "region_code", "cluster_id"]
+    output_upm_strata = output[upm_columns + ["strata_code"]].drop_duplicates()
+    output_upm_strata_counts = output_upm_strata.groupby(
+        upm_columns, dropna=False
+    )["strata_code"].nunique(dropna=False)
+    output_upms_with_multiple_strata = int((output_upm_strata_counts > 1).sum())
+    if output_upms_with_multiple_strata:
+        raise ValueError(
+            "Processed sample-region-cluster maps to multiple strata: "
+            f"{output_upms_with_multiple_strata}"
+        )
+
+    text_identifier_mismatches = {
+        target: int(
+            output[target]
+            .fillna("<NA>")
+            .ne(occupied[source].astype("string").fillna("<NA>"))
+            .sum()
+        )
+        for target, source in TEXT_IDENTIFIER_MAP.items()
+    }
+    if any(text_identifier_mismatches.values()):
+        raise ValueError(
+            "Processed text identifiers differ from their raw values: "
+            f"{text_identifier_mismatches}"
+        )
+
     audit = {
         "raw_rows": int(len(df)),
         "occupied_rows": int(len(output)),
         "codes_changed_from_legacy_right_padding": int(changed.sum()),
         "invalid_or_missing_occupation_codes": int(output["occupation_code_4d"].isna().sum()),
+        "identifier_missing_counts": {
+            column: int(output[column].isna().sum())
+            for column in sorted(AUDITED_IDENTIFIER_COLUMNS)
+        },
+        "duplicate_output_person_key_rows_without_sample": (
+            duplicate_output_rows_without_sample
+        ),
+        "duplicate_output_person_key_rows_with_sample": duplicate_output_rows_with_sample,
+        "output_sample_region_clusters_with_multiple_strata": (
+            output_upms_with_multiple_strata
+        ),
+        "text_identifier_mismatches": text_identifier_mismatches,
+        **identifier_audit,
     }
     return output[OUTPUT_COLUMNS].reset_index(drop=True), audit
 
@@ -196,6 +392,11 @@ def compare_datasets(existing: Path, regenerated: Path) -> dict[str, object]:
     old_reader = pd.read_csv(existing, dtype=str, chunksize=100_000)
     new_reader = pd.read_csv(regenerated, dtype=str, chunksize=100_000)
     for old, new in zip(old_reader, new_reader, strict=True):
+        old_columns_without_sample = [
+            column for column in OUTPUT_COLUMNS if column != "sample_id"
+        ]
+        if list(old.columns) == old_columns_without_sample:
+            old.insert(8, "sample_id", pd.NA)
         if list(old.columns) != OUTPUT_COLUMNS or list(new.columns) != OUTPUT_COLUMNS:
             raise ValueError("Existing or regenerated output has an unexpected schema")
         if len(old) != len(new):
@@ -223,10 +424,15 @@ def compare_datasets(existing: Path, regenerated: Path) -> dict[str, object]:
         )
         unexpected_code_rows += int((~(expected_new & expected_old)).sum())
 
-    non_code_mismatches = {
+    audited_identifier_mismatches = {
         column: count
         for column, count in mismatch_by_column.items()
-        if column != "occupation_code_4d" and count
+        if column in AUDITED_IDENTIFIER_COLUMNS and count
+    }
+    unexpected_mismatches = {
+        column: count
+        for column, count in mismatch_by_column.items()
+        if column not in AUDITED_IDENTIFIER_COLUMNS and count
     }
     result = {
         "existing": portable_path(existing),
@@ -235,10 +441,11 @@ def compare_datasets(existing: Path, regenerated: Path) -> dict[str, object]:
         "mismatch_by_column": {
             column: count for column, count in mismatch_by_column.items() if count
         },
-        "non_code_mismatches": non_code_mismatches,
+        "audited_identifier_mismatches": audited_identifier_mismatches,
+        "unexpected_mismatches": unexpected_mismatches,
         "unexpected_code_rows": unexpected_code_rows,
     }
-    if non_code_mismatches or unexpected_code_rows:
+    if unexpected_mismatches or unexpected_code_rows:
         raise ValueError(f"Regenerated data differs unexpectedly: {result}")
     return result
 

@@ -1,0 +1,8 @@
+level,status,units,occupied_rows,missing_rows,missing_pct_within_status
+conglomerado,sin_faltantes,118949,720567,0,0.0
+conglomerado,unidad_completa_sin_factor,73,147,147,100.0
+conglomerado,unidad_mixta,9716,76334,23143,30.318075824665286
+vivienda,sin_faltantes,441653,773758,0,0.0
+vivienda,unidad_completa_sin_factor,13478,23290,23290,100.0
+hogar,sin_faltantes,448866,773758,0,0.0
+hogar,unidad_completa_sin_factor,13666,23290,23290,100.0

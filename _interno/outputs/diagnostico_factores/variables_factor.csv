@@ -1,0 +1,5 @@
+year,factor_variable,present_in_csv,nonmissing_population_rows,nonmissing_occupied_rows,nonmissing_among_occupied_without_annual_factor
+2022,FAC300_ANUAL,True,303987,192416,0
+2023,FAC300_ANUAL,True,304009,195482,0
+2024,FAC300_ANUAL,True,299929,192852,0
+2025,FAC300_ANUAL,True,297341,193008,0

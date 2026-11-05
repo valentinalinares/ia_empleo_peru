@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import gzip
 import hashlib
 import json
 import os
@@ -62,6 +63,15 @@ def sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def sha256_lf(path: Path) -> str:
+    """SHA-256 con finales de linea normalizados a LF.
+
+    Las bases completas son CSV de texto: en Windows Git puede escribirlas con
+    CRLF. Normalizar evita que la huella dependa del sistema operativo.
+    """
+    return hashlib.sha256(path.read_bytes().replace(b"\r\n", b"\n")).hexdigest()
+
+
 def normalise_label(value: object) -> str | None:
     if pd.isna(value):
         return None
@@ -92,6 +102,10 @@ def education_label_to_code(value: object) -> int | pd.NA:
     if label.endswith("especial"):
         return 12
     raise ValueError(f"Etiqueta educativa no reconocida: {value!r}")
+
+
+def read_as_text(path: Path) -> pd.DataFrame:
+    return pd.read_csv(path, dtype=str, keep_default_na=False, na_filter=False)
 
 
 def integer_identifier(series: pd.Series, width: int) -> pd.Series:
@@ -141,7 +155,7 @@ def education_lookup(complete_dir: Path, start_year: int, end_year: int) -> tupl
             "non_missing": int(code.notna().sum()),
             "missing": int(code.isna().sum()),
             "codes": {str(k): int(v) for k, v in code.value_counts().sort_index().items()},
-            "source_sha256": sha256(path),
+            "source_sha256_lf": sha256_lf(path),
         }
 
     lookup = pd.concat(pieces)
@@ -159,7 +173,9 @@ def rebuild_education(
     manifest_path: Path | None = None,
 ) -> dict:
     before_hash = sha256(input_path)
-    before = pd.read_csv(input_path, low_memory=False)
+    # Leer todo como texto: asi se conservan ceros a la izquierda (region_code,
+    # occupation_code_4d) y la representacion exacta de los decimales.
+    before = read_as_text(input_path)
     if "education_code" not in before.columns:
         raise ValueError("La base procesada no contiene education_code.")
     original_other = before.drop(columns="education_code").copy(deep=True)
@@ -169,10 +185,11 @@ def rebuild_education(
     if keys.duplicated().any():
         raise ValueError("La llave de persona no es única en la base procesada.")
     education = keys.map(lookup).astype("Int64")
-    missing_by_year = education.isna().groupby(before["year"]).sum()
-    if (missing_by_year == before.groupby("year").size()).any():
+    year = pd.to_numeric(before["year"], errors="raise").astype(int)
+    missing_by_year = education.isna().groupby(year).sum()
+    if (missing_by_year == year.groupby(year).size()).any():
         raise ValueError("education_code quedó completamente vacío en al menos un año.")
-    before["education_code"] = education
+    before["education_code"] = education.astype("string").fillna("")
 
     pd.testing.assert_frame_equal(
         original_other,
@@ -185,16 +202,19 @@ def rebuild_education(
     with tempfile.NamedTemporaryFile(dir=output_path.parent, suffix=".csv.gz", delete=False) as temp:
         temp_path = Path(temp.name)
     try:
-        before.to_csv(
-            temp_path,
-            index=False,
-            compression={"method": "gzip", "compresslevel": 9, "mtime": 0},
-        )
-        serialized = pd.read_csv(temp_path, low_memory=False)
+        # Salida determinista e igual en cualquier sistema: CRLF como la base
+        # original, gzip sin nombre de archivo ni fecha en la cabecera.
+        payload = before.to_csv(index=False, lineterminator="\r\n").encode("utf-8")
+        with temp_path.open("wb") as raw, gzip.GzipFile(
+            filename="", mode="wb", fileobj=raw, compresslevel=9, mtime=0
+        ) as compressed:
+            compressed.write(payload)
+        serialized = read_as_text(temp_path)
+        if list(serialized.columns) != list(before.columns):
+            raise ValueError("El orden de columnas cambio al escribir la base.")
         pd.testing.assert_frame_equal(
             original_other.reset_index(drop=True),
             serialized.drop(columns="education_code").reset_index(drop=True),
-            check_dtype=False,
             check_exact=True,
         )
         os.replace(temp_path, output_path)
@@ -210,12 +230,12 @@ def rebuild_education(
         "row_order_unchanged": True,
         "other_columns_unchanged": True,
         "education": {
-            str(year): {
-                "rows": int((before["year"] == year).sum()),
-                "non_missing": int(before.loc[before["year"] == year, "education_code"].notna().sum()),
-                "missing": int(before.loc[before["year"] == year, "education_code"].isna().sum()),
+            str(y): {
+                "rows": int((year == y).sum()),
+                "non_missing": int(education[year == y].notna().sum()),
+                "missing": int(education[year == y].isna().sum()),
             }
-            for year in range(start_year, end_year + 1)
+            for y in range(start_year, end_year + 1)
         },
         "sources": source_audit,
         "edu_map": {str(key): value for key, value in EDU_MAP.items()},

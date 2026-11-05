@@ -2,7 +2,7 @@
   "input": "enaho_persona_anual_2019_2025.csv.gz",
   "output": "enaho_persona_anual_2019_2025.csv.gz",
   "sha256_before": "2e894d55cc627d5e3f019e3fdb237f628c040692a88000732aba08d233d9df41",
-  "sha256_after": "264f37bbb4ee5747225281e90e954f62c280dc60df9567a910c2415777c4e678",
+  "sha256_after": "228df5dd0d6083543311d9f0be7276dc8165274b6066934e5e3fc4ca45902629",
   "rows": 418427,
   "row_order_unchanged": true,
   "other_columns_unchanged": true,
@@ -63,7 +63,7 @@
         "11": 1404,
         "12": 110
       },
-      "source_sha256": "9b2bbf85cba2fa5f939f57a3e7f83d5ea84f053c5d72b8a32232aa3e640e9a3a"
+      "source_sha256_lf": "ee25e5039d87a672b690c1dbcb53a8e79edb5b0d7c9b84c262dbb17f7467b8f1"
     },
     "2020": {
       "source": "nivel educativo (P301A etiquetado)",
@@ -84,7 +84,7 @@
         "11": 1219,
         "12": 98
       },
-      "source_sha256": "ad210269a3dd4bed6d83310a291a004ade95bb2e58250b626b93d4932b78121d"
+      "source_sha256_lf": "51366d75e23394c5d6f05b271186b90dbb5db44835d25d9704228bd54007ae42"
     },
     "2021": {
       "source": "nivel educativo (P301A etiquetado)",
@@ -105,7 +105,7 @@
         "11": 1182,
         "12": 79
       },
-      "source_sha256": "8447856066b2607082362842d29749a48e2e6a197a13ed25daf10283b64e4120"
+      "source_sha256_lf": "084ad3615c9f28977e92d7617b6f3b1b81430a1179649ccce79435e9b0bccded"
     },
     "2022": {
       "source": "nivel educativo (P301A etiquetado)",
@@ -126,7 +126,7 @@
         "11": 1345,
         "12": 105
       },
-      "source_sha256": "20d052713af4e07e6e8660b554c22fdb61aa6e41eea20ff0c6933019b389f138"
+      "source_sha256_lf": "6ff57857b0e5c6a74f6633a45845ae77b45b2ee9126480e00452213913c76100"
     },
     "2023": {
       "source": "nivel educativo (P301A etiquetado)",
@@ -147,7 +147,7 @@
         "11": 1304,
         "12": 89
       },
-      "source_sha256": "865427b1fbc07f3bc1ab40f3131378f212334825694bcc1f82f33f12ed41fdb2"
+      "source_sha256_lf": "eb8bc43a69cd3d666cf193169ecd0929eda69235a4a43bfa8a9fd37515e8b740"
     },
     "2024": {
       "source": "nivel educativo (P301A etiquetado)",
@@ -168,7 +168,7 @@
         "11": 1363,
         "12": 87
       },
-      "source_sha256": "f280ab59e45a164e9e2733c87219aa6043068c697523f06309615bfda5d3b523"
+      "source_sha256_lf": "e149a80f70a6668aeae7eb0a6dfaa242ddaf2a2b18bee8f6a97d74e2dc68f07b"
     },
     "2025": {
       "source": "nivel educativo (P301A etiquetado)",
@@ -189,7 +189,7 @@
         "11": 1399,
         "12": 94
       },
-      "source_sha256": "6278afa27af9a6260c7ef09261a08efb7048fd9666fbc18328869bb33474b061"
+      "source_sha256_lf": "7586a3fdcda672ca84f20b722f11bda878a13d4f7a2060be287bb474f293e2f3"
     }
   },
   "edu_map": {

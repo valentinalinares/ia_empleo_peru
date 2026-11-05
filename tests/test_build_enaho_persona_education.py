@@ -39,10 +39,12 @@ class EnahoEducationTests(unittest.TestCase):
                 "dwelling_id": [3, 3],
                 "household_id": [1, 1],
                 "person_id": [1, 2],
+                "region_code": ["01", "15"],
                 "ubigeo": [150101, 150101],
                 "domain_code": [8, 8],
                 "strata_code": [4, 4],
-                "occupation_code_4d": [212, 5212],
+                "occupation_code_4d": ["0212", "5212"],
+                "labor_income_monthly": ["1818.6000000000001", ""],
                 "education_code": [pd.NA, pd.NA],
             }
         )
@@ -70,15 +72,19 @@ class EnahoEducationTests(unittest.TestCase):
                 2025,
                 2025,
             )
-            before = pd.read_csv(input_path)
-            after = pd.read_csv(output_path)
+            before = pd.read_csv(input_path, dtype=str, keep_default_na=False)
+            after = pd.read_csv(output_path, dtype=str, keep_default_na=False)
 
         pd.testing.assert_frame_equal(
             before.drop(columns="education_code"),
             after.drop(columns="education_code"),
-            check_dtype=False,
+            check_exact=True,
         )
-        self.assertEqual(after["education_code"].tolist(), [11, 6])
+        # Los codigos conservan sus ceros y los decimales su texto original.
+        self.assertEqual(after["region_code"].tolist(), ["01", "15"])
+        self.assertEqual(after["occupation_code_4d"].tolist(), ["0212", "5212"])
+        self.assertEqual(after["labor_income_monthly"].tolist(), ["1818.6000000000001", ""])
+        self.assertEqual(after["education_code"].tolist(), ["11", "6"])
         self.assertTrue(result["other_columns_unchanged"])
 
     def test_real_output_has_education_in_every_year(self) -> None:

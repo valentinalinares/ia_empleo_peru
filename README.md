@@ -46,3 +46,16 @@ Para esta carpeta de presentación se quitó porque solo metía ruido.
 - insumos intermedios para los notebooks y el HTML maestro
 
 Eso se dejó fuera de la vista principal para que la carpeta sea más limpia al presentarla.
+
+## Metodología y autoría del índice
+
+El índice usado por los reportes es una nueva corrida desarrollada por
+Valentina Linares Herrera y Walter Omar Manky Bonilla con Claude Sonnet 4.6.
+Es una actualización metodológica del trabajo publicado por Manky (2025), no
+una reproducción de los puntajes publicados por el INEI. Conserva un score
+continuo y aplica reglas revisadas para empates, ambigüedades y tipo de
+exposición.
+
+La procedencia del índice, su relación con la publicación oficial y la
+documentación pública disponible sobre el diseño EPEN se detallan en
+[`_interno/docs/metodologia_indice_y_diseno_epen.md`](_interno/docs/metodologia_indice_y_diseno_epen.md).

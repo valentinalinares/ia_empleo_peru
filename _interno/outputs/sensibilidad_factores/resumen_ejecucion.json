@@ -20,12 +20,14 @@
   ],
   "official_reports_unavailable": [],
   "uncovered_persons_in_adjustment_cells_2023_2025": 0,
+  "max_abs_version_c_cell_difference": 5.820766091346741e-11,
   "outputs": [
     "celdas_ajuste_no_respuesta.csv",
     "comparacion_cifras_oficiales_departamento_2022.csv",
     "comparacion_cifras_oficiales_nacional.csv",
     "comparacion_sin_pesos.csv",
     "sensibilidad_indicadores.csv",
+    "tendencia_indicadores.csv",
     "totales_peso_sensibilidad.csv"
   ],
   "report": "_interno/docs/epen_sensibilidad_factores.md"

@@ -61,36 +61,56 @@ El detalle de todos los niveles de gran grupo ocupacional, educación y sexo se 
 
 ## 3. Sensibilidad de los indicadores
 
-La versión (a) usa únicamente factores válidos. La versión (b) multiplica cada factor válido por `personas totales / personas con factor` dentro de año × mes × región × estrato × área. No se asigna factor a las filas faltantes. `% alta exposición` es la media ponderada de `%_alta_exposicion` del índice ocupacional y se expresa en puntos porcentuales.
+La versión (a) usa únicamente factores válidos. La versión (b) multiplica cada factor válido por `personas totales / personas con factor` dentro de año × mes × región × estrato × área y no incorpora las filas sin factor. La versión (c) asigna a cada persona sin factor el factor medio válido de su celda y luego reescala todos los factores de la celda para conservar exactamente la suma original. `% alta exposición` es la media ponderada de `%_alta_exposicion` del índice ocupacional y se expresa en puntos porcentuales.
 
-| Año | Indicador | Exclusión | Ajuste | Diferencia |
+| Año | Indicador | (a) Exclusión | (b) Ajuste | (c) Imputación calibrada | (b)-(a) | (c)-(a) |
+| --- | --- | --- | --- | --- | --- | --- |
+| 2023 | exposicion_ia_media | 0.2799 | 0.2803 | 0.2795 | 0.0003 | -0.0004 |
+| 2023 | porcentaje_alta_exposicion | 15.7083 | 15.7482 | 15.6651 | 0.0399 | -0.0432 |
+| 2023 | ingreso_mensual_medio | 1 361.3075 | 1 364.8914 | 1 359.4402 | 3.5839 | -1.8673 |
+| 2024 | exposicion_ia_media | 0.2794 | 0.2815 | 0.2773 | 0.0020 | -0.0021 |
+| 2024 | porcentaje_alta_exposicion | 15.6523 | 15.8916 | 15.4539 | 0.2393 | -0.1985 |
+| 2024 | ingreso_mensual_medio | 1 448.6322 | 1 471.6660 | 1 436.1362 | 23.0338 | -12.4960 |
+| 2025 | exposicion_ia_media | 0.2824 | 0.2867 | 0.2780 | 0.0043 | -0.0044 |
+| 2025 | porcentaje_alta_exposicion | 16.0096 | 16.5213 | 15.5757 | 0.5117 | -0.4339 |
+| 2025 | ingreso_mensual_medio | 1 550.4698 | 1 599.0266 | 1 529.7127 | 48.5568 | -20.7571 |
+
+Efecto de las versiones sobre la suma de pesos:
+
+| Año | Pesos originales | Pesos (b) | Aumento (b) % | Pesos (c) | Diferencia (c) |
+| --- | --- | --- | --- | --- | --- |
+| 2023 | 17 179 796.2 | 17 309 560.2 | 0.755 | 17 179 796.2 | 0.00000000 |
+| 2024 | 17 322 935.8 | 18 214 759.4 | 5.148 | 17 322 935.8 | 0.00000000 |
+| 2025 | 17 575 150.0 | 19 438 352.0 | 10.601 | 17 575 150.0 | 0.00000000 |
+
+No hay celdas sin ningún factor válido: quedan 0 personas sin cubrir. El multiplicador máximo de (b) es 1.2803. La versión (c) conserva la suma original en cada celda, dentro de precisión numérica. Los resultados completos por región y sexo están en `sensibilidad_indicadores.csv`; las celdas y sus controles, en `celdas_ajuste_no_respuesta.csv`.
+
+## Tendencia 2023–2025
+
+La tabla muestra cambios absolutos. En exposición media son proporciones; en alta exposición, puntos porcentuales; y en ingreso, soles.
+
+| Indicador | Versión | 2023-2024 | 2024-2025 | 2023-2025 |
 | --- | --- | --- | --- | --- |
-| 2023 | exposicion_ia_media | 0.2799 | 0.2803 | 0.0003 |
-| 2023 | porcentaje_alta_exposicion | 15.7083 | 15.7482 | 0.0399 |
-| 2023 | ingreso_mensual_medio | 1 361.3075 | 1 364.8914 | 3.5839 |
-| 2024 | exposicion_ia_media | 0.2794 | 0.2815 | 0.0020 |
-| 2024 | porcentaje_alta_exposicion | 15.6523 | 15.8916 | 0.2393 |
-| 2024 | ingreso_mensual_medio | 1 448.6322 | 1 471.6660 | 23.0338 |
-| 2025 | exposicion_ia_media | 0.2824 | 0.2867 | 0.0043 |
-| 2025 | porcentaje_alta_exposicion | 16.0096 | 16.5213 | 0.5117 |
-| 2025 | ingreso_mensual_medio | 1 550.4698 | 1 599.0266 | 48.5568 |
+| exposicion_ia_media | (a) Exclusión | -0.0005 | 0.0030 | 0.0024 |
+| exposicion_ia_media | (b) Ajuste | 0.0012 | 0.0052 | 0.0064 |
+| exposicion_ia_media | (c) Imputación calibrada | -0.0022 | 0.0007 | -0.0015 |
+| ingreso_mensual_medio | (a) Exclusión | 87.3247 | 101.8376 | 189.1623 |
+| ingreso_mensual_medio | (b) Ajuste | 106.7746 | 127.3606 | 234.1352 |
+| ingreso_mensual_medio | (c) Imputación calibrada | 76.6960 | 93.5765 | 170.2725 |
+| porcentaje_alta_exposicion | (a) Exclusión | -0.0560 | 0.3573 | 0.3013 |
+| porcentaje_alta_exposicion | (b) Ajuste | 0.1434 | 0.6297 | 0.7731 |
+| porcentaje_alta_exposicion | (c) Imputación calibrada | -0.2112 | 0.1219 | -0.0893 |
 
-Efecto del ajuste sobre la suma de pesos:
+La versión (b) eleva la exposición porque aumenta el peso de los respondentes de las celdas urbanas afectadas, pero no incorpora a las personas sin factor, cuya exposición observada es menor. La versión (c) sí incorpora a esas personas y preserva los totales calibrados, por lo que separa ese efecto de composición del aumento artificial de población de (b). El detalle nacional, regional y por sexo está en `tendencia_indicadores.csv`.
 
-| Año | Pesos originales | Pesos ajustados | Aumento % |
-| --- | --- | --- | --- |
-| 2023 | 17 179 796.2 | 17 309 560.2 | 0.755 |
-| 2024 | 17 322 935.8 | 18 214 759.4 | 5.148 |
-| 2025 | 17 575 150.0 | 19 438 352.0 | 10.601 |
-
-No hay celdas sin ningún factor válido: quedan 0 personas sin cubrir. El multiplicador máximo es 1.2803. Los resultados completos por región y sexo están en `sensibilidad_indicadores.csv`; las celdas y sus multiplicadores, en `celdas_ajuste_no_respuesta.csv`.
+La tendencia de exposición **no es robusta al tratamiento de los factores faltantes**. Entre 2023 y 2025, (a) muestra un cambio de +0.0024 en exposición media y +0.3013 puntos porcentuales en alta exposición, mientras (c) muestra -0.0015 y -0.0893, respectivamente. La imputación calibrada cambia el signo de ambos resultados; por tanto, no corresponde concluir que la exposición aumentó sin reportar esta sensibilidad.
 
 ## Limitaciones
 
 - La prueba simple no sustituye inferencia con el diseño muestral completo.
-- El ajuste solicitado supone que, condicionando por la celda, las filas con factor representan también a las filas sin factor. Las comparaciones descriptivas pueden cuestionar esa hipótesis, pero no demostrarla.
+- Las versiones (b) y (c) suponen que la celda define un grupo adecuado para tratar la falta de factor. La versión (c), además, asigna el promedio de factor a cada caso faltante; es una sensibilidad, no un factor oficial reconstruido.
 - Las cifras oficiales están publicadas en centenas; las diferencias pequeñas con la suma de factores reflejan redondeo.
 
 ## Recomendación
 
-**Usar la exclusión de filas sin factor como especificación principal y conservar el ajuste solo como sensibilidad.** Los factores válidos ya están calibrados: sus sumas reproducen los totales oficiales de población ocupada. Inflarlos de nuevo con la tasa de respuesta muestral eleva artificialmente la población ponderada y descansa en una hipótesis de representatividad intra-celda que no está documentada por el INEI. Para transparencia, el reporte final puede mostrar el intervalo entre ambas estimaciones, pero no debe presentar la versión ajustada como estimación central.
+**Usar la versión (a), exclusión de filas sin factor, como especificación principal; presentar (c) como sensibilidad conservadora de totales y no usar (b) como estimación central.** Los factores válidos ya reproducen los totales oficiales. La versión (b) los infla nuevamente. La versión (c) corrige ese problema, pero sigue dependiendo de una imputación no oficial, por lo que no desplaza a (a) como estimación central. Sin embargo, (c) sí contradice la dirección ascendente de la exposición entre 2023 y 2025 observada con (a). En consecuencia, los niveles deben reportarse con (a) como referencia, mientras la tendencia debe presentarse como no robusta y acompañada por el rango (a)-(c).

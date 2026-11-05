@@ -222,17 +222,32 @@ def build_adjusted_weights(base: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFra
     # "Con factor" significa FAC300_ANUAL observado. Los cuatro factores con
     # valor cero de 2023 cuentan como observados, aunque no aporten peso.
     working["factor_valid"] = working["weight"].notna()
-    cells = (working.groupby(ADJUSTMENT_KEYS, dropna=False)["factor_valid"]
-             .agg(total_persons="size", persons_with_factor="sum").reset_index())
+    cells = (working.groupby(ADJUSTMENT_KEYS, dropna=False)
+             .agg(total_persons=("factor_valid", "size"),
+                  persons_with_factor=("factor_valid", "sum"),
+                  original_weight_sum=("weight", "sum"))
+             .reset_index())
     cells["persons_without_factor"] = cells["total_persons"] - cells["persons_with_factor"]
     cells["adjustment_multiplier"] = np.where(cells["persons_with_factor"].gt(0),
                                                cells["total_persons"] / cells["persons_with_factor"], np.nan)
+    cells["valid_weight_mean"] = np.where(cells["persons_with_factor"].gt(0),
+                                           cells["original_weight_sum"] / cells["persons_with_factor"], np.nan)
+    cells["calibration_multiplier_c"] = np.where(cells["persons_with_factor"].gt(0),
+                                                  cells["persons_with_factor"] / cells["total_persons"], np.nan)
     cells["uncovered_persons"] = np.where(cells["persons_with_factor"].eq(0),
                                            cells["total_persons"], 0).astype(int)
-    working = working.merge(cells[ADJUSTMENT_KEYS + ["adjustment_multiplier", "uncovered_persons"]],
+    working = working.merge(cells[ADJUSTMENT_KEYS + ["adjustment_multiplier", "valid_weight_mean",
+                                                      "calibration_multiplier_c", "uncovered_persons"]],
                             on=ADJUSTMENT_KEYS, how="left", validate="many_to_one")
     working["adjusted_weight"] = np.where(working["factor_valid"],
                                            working["weight"] * working["adjustment_multiplier"], np.nan)
+    provisional_c = np.where(working["factor_valid"], working["weight"],
+                             working["valid_weight_mean"])
+    working["imputed_calibrated_weight"] = provisional_c * working["calibration_multiplier_c"]
+    version_c_sums = (working.groupby(ADJUSTMENT_KEYS, dropna=False)["imputed_calibrated_weight"]
+                      .sum(min_count=1).rename("version_c_weight_sum").reset_index())
+    cells = cells.merge(version_c_sums, on=ADJUSTMENT_KEYS, how="left", validate="one_to_one")
+    cells["version_c_minus_original"] = cells["version_c_weight_sum"] - cells["original_weight_sum"]
     return working, cells
 
 
@@ -259,26 +274,65 @@ def sensitivity_indicators(base: pd.DataFrame) -> tuple[pd.DataFrame, pd.DataFra
                 for indicator, (column, unit) in indicators.items():
                     original = weighted_mean(frame[column], frame["weight"])
                     adjusted_estimate = weighted_mean(frame[column], frame["adjusted_weight"])
+                    imputed_estimate = weighted_mean(frame[column], frame["imputed_calibrated_weight"])
                     scale = 100.0 if unit == "percentage_points" else 1.0
-                    original, adjusted_estimate = original * scale, adjusted_estimate * scale
-                    difference = adjusted_estimate - original
+                    original, adjusted_estimate, imputed_estimate = (
+                        original * scale, adjusted_estimate * scale, imputed_estimate * scale)
+                    difference_b = adjusted_estimate - original
+                    difference_c = imputed_estimate - original
                     records.append({
                         "year": year, "aggregation": aggregation, "group_code": group,
                         "group_label": group_label, "indicator": indicator, "unit": unit,
                         "estimate_excluding_missing_factor": original,
                         "estimate_adjusted_nonresponse": adjusted_estimate,
-                        "absolute_difference": difference,
-                        "percentage_difference": 100 * difference / original if original != 0 else math.nan,
+                        "estimate_imputed_cell_mean_calibrated": imputed_estimate,
+                        "absolute_difference": difference_b,
+                        "percentage_difference": 100 * difference_b / original if original != 0 else math.nan,
+                        "absolute_difference_c_minus_a": difference_c,
+                        "percentage_difference_c_minus_a": 100 * difference_c / original if original != 0 else math.nan,
                         "sample_persons_total": int(len(frame)),
                         "sample_persons_with_factor": int(frame["factor_valid"].sum()),
                         "sample_persons_with_outcome_and_factor": int((frame[column].notna() & frame["factor_valid"]).sum()),
                     })
     totals = (adjusted.groupby("year", as_index=False)
               .agg(original_weight_sum=("weight", "sum"), adjusted_weight_sum=("adjusted_weight", "sum"),
+                   imputed_calibrated_weight_sum=("imputed_calibrated_weight", "sum"),
                    sample_persons=("weight", "size"), sample_persons_with_factor=("factor_valid", "sum")))
     totals["absolute_increase"] = totals["adjusted_weight_sum"] - totals["original_weight_sum"]
     totals["percentage_increase"] = 100 * totals["absolute_increase"] / totals["original_weight_sum"]
+    totals["version_c_minus_original"] = totals["imputed_calibrated_weight_sum"] - totals["original_weight_sum"]
     return pd.DataFrame.from_records(records), cells, totals
+
+
+def indicator_trends(sensitivity: pd.DataFrame) -> pd.DataFrame:
+    versions = {
+        "a_exclusion": "estimate_excluding_missing_factor",
+        "b_nonresponse_adjustment": "estimate_adjusted_nonresponse",
+        "c_imputed_calibrated": "estimate_imputed_cell_mean_calibrated",
+    }
+    periods = ((2023, 2024), (2024, 2025), (2023, 2025))
+    keys = ["aggregation", "group_code", "group_label", "indicator", "unit"]
+    records: list[dict[str, object]] = []
+    for key, group in sensitivity.groupby(keys, dropna=False):
+        by_year = group.set_index("year")
+        for start, end in periods:
+            if start not in by_year.index or end not in by_year.index:
+                continue
+            for version, column in versions.items():
+                start_value = float(by_year.loc[start, column])
+                end_value = float(by_year.loc[end, column])
+                change = end_value - start_value
+                records.append({
+                    **dict(zip(keys, key, strict=True)),
+                    "year_start": start,
+                    "year_end": end,
+                    "version": version,
+                    "estimate_start": start_value,
+                    "estimate_end": end_value,
+                    "absolute_change": change,
+                    "percentage_change": 100 * change / start_value if start_value != 0 else math.nan,
+                })
+    return pd.DataFrame.from_records(records)
 
 
 def format_number(value: float, digits: int = 2) -> str:
@@ -295,7 +349,8 @@ def markdown_table(frame: pd.DataFrame, columns: list[str]) -> str:
 
 def write_report(path: Path, national: pd.DataFrame, regions: pd.DataFrame,
                  unweighted: pd.DataFrame, sensitivity: pd.DataFrame,
-                 cells: pd.DataFrame, totals: pd.DataFrame, base_hash: str) -> None:
+                 cells: pd.DataFrame, totals: pd.DataFrame,
+                 trends: pd.DataFrame, base_hash: str) -> None:
     national_display = national.copy()
     national_display["Año"] = national_display["year"]
     national_display["Oficial"] = national_display["official_occupied"].map(lambda x: format_number(x, 0))
@@ -305,9 +360,11 @@ def write_report(path: Path, national: pd.DataFrame, regions: pd.DataFrame,
     national_sensitivity = sensitivity.loc[sensitivity["aggregation"].eq("national")].copy()
     national_sensitivity["Año"] = national_sensitivity["year"]
     national_sensitivity["Indicador"] = national_sensitivity["indicator"]
-    national_sensitivity["Exclusión"] = national_sensitivity["estimate_excluding_missing_factor"].map(lambda x: format_number(x, 4))
-    national_sensitivity["Ajuste"] = national_sensitivity["estimate_adjusted_nonresponse"].map(lambda x: format_number(x, 4))
-    national_sensitivity["Diferencia"] = national_sensitivity["absolute_difference"].map(lambda x: format_number(x, 4))
+    national_sensitivity["(a) Exclusión"] = national_sensitivity["estimate_excluding_missing_factor"].map(lambda x: format_number(x, 4))
+    national_sensitivity["(b) Ajuste"] = national_sensitivity["estimate_adjusted_nonresponse"].map(lambda x: format_number(x, 4))
+    national_sensitivity["(c) Imputación calibrada"] = national_sensitivity["estimate_imputed_cell_mean_calibrated"].map(lambda x: format_number(x, 4))
+    national_sensitivity["(b)-(a)"] = national_sensitivity["absolute_difference"].map(lambda x: format_number(x, 4))
+    national_sensitivity["(c)-(a)"] = national_sensitivity["absolute_difference_c_minus_a"].map(lambda x: format_number(x, 4))
     continuous = unweighted.loc[unweighted["outcome_type"].eq("continuous")].copy()
     continuous["Año"], continuous["Variable"] = continuous["year"], continuous["outcome"]
     continuous["Media con factor"] = continuous["mean_with_factor"].map(lambda x: format_number(x, 3))
@@ -326,8 +383,31 @@ def write_report(path: Path, national: pd.DataFrame, regions: pd.DataFrame,
     total_display = totals.copy()
     total_display["Año"] = total_display["year"]
     total_display["Pesos originales"] = total_display["original_weight_sum"].map(lambda x: format_number(x, 1))
-    total_display["Pesos ajustados"] = total_display["adjusted_weight_sum"].map(lambda x: format_number(x, 1))
-    total_display["Aumento %"] = total_display["percentage_increase"].map(lambda x: format_number(x, 3))
+    total_display["Pesos (b)"] = total_display["adjusted_weight_sum"].map(lambda x: format_number(x, 1))
+    total_display["Aumento (b) %"] = total_display["percentage_increase"].map(lambda x: format_number(x, 3))
+    total_display["Pesos (c)"] = total_display["imputed_calibrated_weight_sum"].map(lambda x: format_number(x, 1))
+    total_display["Diferencia (c)"] = total_display["version_c_minus_original"].map(lambda x: format_number(x, 8))
+
+    national_trends = trends.loc[trends["aggregation"].eq("national")].copy()
+    version_labels = {
+        "a_exclusion": "(a) Exclusión",
+        "b_nonresponse_adjustment": "(b) Ajuste",
+        "c_imputed_calibrated": "(c) Imputación calibrada",
+    }
+    national_trends["Versión"] = national_trends["version"].map(version_labels)
+    national_trends["period"] = national_trends["year_start"].astype(str) + "-" + national_trends["year_end"].astype(str)
+    trend_display = (national_trends.pivot(index=["indicator", "Versión"], columns="period",
+                                           values="absolute_change").reset_index())
+    trend_display = trend_display.rename(columns={"indicator": "Indicador"})
+    for period in ("2023-2024", "2024-2025", "2023-2025"):
+        trend_display[period] = trend_display[period].map(lambda x: format_number(x, 4))
+    trend_2023_2025 = national_trends.loc[
+        national_trends["year_start"].eq(2023) & national_trends["year_end"].eq(2025)
+    ].set_index(["indicator", "version"])["absolute_change"]
+    exposure_change_a = trend_2023_2025.loc[("exposicion_ia_media", "a_exclusion")]
+    exposure_change_c = trend_2023_2025.loc[("exposicion_ia_media", "c_imputed_calibrated")]
+    high_change_a = trend_2023_2025.loc[("porcentaje_alta_exposicion", "a_exclusion")]
+    high_change_c = trend_2023_2025.loc[("porcentaje_alta_exposicion", "c_imputed_calibrated")]
 
     lines = [
         "# Sensibilidad a factores de expansión faltantes en la EPEN", "",
@@ -350,17 +430,22 @@ def write_report(path: Path, national: pd.DataFrame, regions: pd.DataFrame,
         markdown_table(largest, ["Año", "Variable", "Categoría", "DME máxima"]), "",
         "El detalle de todos los niveles de gran grupo ocupacional, educación y sexo se conserva en `comparacion_sin_pesos.csv`.", "",
         "## 3. Sensibilidad de los indicadores", "",
-        "La versión (a) usa únicamente factores válidos. La versión (b) multiplica cada factor válido por `personas totales / personas con factor` dentro de año × mes × región × estrato × área. No se asigna factor a las filas faltantes. `% alta exposición` es la media ponderada de `%_alta_exposicion` del índice ocupacional y se expresa en puntos porcentuales.", "",
-        markdown_table(national_sensitivity, ["Año", "Indicador", "Exclusión", "Ajuste", "Diferencia"]), "",
-        "Efecto del ajuste sobre la suma de pesos:", "",
-        markdown_table(total_display, ["Año", "Pesos originales", "Pesos ajustados", "Aumento %"]), "",
-        f"No hay celdas sin ningún factor válido: quedan {uncovered} personas sin cubrir. El multiplicador máximo es {max_multiplier:.4f}. Los resultados completos por región y sexo están en `sensibilidad_indicadores.csv`; las celdas y sus multiplicadores, en `celdas_ajuste_no_respuesta.csv`.", "",
+        "La versión (a) usa únicamente factores válidos. La versión (b) multiplica cada factor válido por `personas totales / personas con factor` dentro de año × mes × región × estrato × área y no incorpora las filas sin factor. La versión (c) asigna a cada persona sin factor el factor medio válido de su celda y luego reescala todos los factores de la celda para conservar exactamente la suma original. `% alta exposición` es la media ponderada de `%_alta_exposicion` del índice ocupacional y se expresa en puntos porcentuales.", "",
+        markdown_table(national_sensitivity, ["Año", "Indicador", "(a) Exclusión", "(b) Ajuste", "(c) Imputación calibrada", "(b)-(a)", "(c)-(a)"]), "",
+        "Efecto de las versiones sobre la suma de pesos:", "",
+        markdown_table(total_display, ["Año", "Pesos originales", "Pesos (b)", "Aumento (b) %", "Pesos (c)", "Diferencia (c)"]), "",
+        f"No hay celdas sin ningún factor válido: quedan {uncovered} personas sin cubrir. El multiplicador máximo de (b) es {max_multiplier:.4f}. La versión (c) conserva la suma original en cada celda, dentro de precisión numérica. Los resultados completos por región y sexo están en `sensibilidad_indicadores.csv`; las celdas y sus controles, en `celdas_ajuste_no_respuesta.csv`.", "",
+        "## Tendencia 2023–2025", "",
+        "La tabla muestra cambios absolutos. En exposición media son proporciones; en alta exposición, puntos porcentuales; y en ingreso, soles.", "",
+        markdown_table(trend_display, ["Indicador", "Versión", "2023-2024", "2024-2025", "2023-2025"]), "",
+        "La versión (b) eleva la exposición porque aumenta el peso de los respondentes de las celdas urbanas afectadas, pero no incorpora a las personas sin factor, cuya exposición observada es menor. La versión (c) sí incorpora a esas personas y preserva los totales calibrados, por lo que separa ese efecto de composición del aumento artificial de población de (b). El detalle nacional, regional y por sexo está en `tendencia_indicadores.csv`.", "",
+        f"La tendencia de exposición **no es robusta al tratamiento de los factores faltantes**. Entre 2023 y 2025, (a) muestra un cambio de {exposure_change_a:+.4f} en exposición media y {high_change_a:+.4f} puntos porcentuales en alta exposición, mientras (c) muestra {exposure_change_c:+.4f} y {high_change_c:+.4f}, respectivamente. La imputación calibrada cambia el signo de ambos resultados; por tanto, no corresponde concluir que la exposición aumentó sin reportar esta sensibilidad.", "",
         "## Limitaciones", "",
         "- La prueba simple no sustituye inferencia con el diseño muestral completo.",
-        "- El ajuste solicitado supone que, condicionando por la celda, las filas con factor representan también a las filas sin factor. Las comparaciones descriptivas pueden cuestionar esa hipótesis, pero no demostrarla.",
+        "- Las versiones (b) y (c) suponen que la celda define un grupo adecuado para tratar la falta de factor. La versión (c), además, asigna el promedio de factor a cada caso faltante; es una sensibilidad, no un factor oficial reconstruido.",
         "- Las cifras oficiales están publicadas en centenas; las diferencias pequeñas con la suma de factores reflejan redondeo.", "",
         "## Recomendación", "",
-        "**Usar la exclusión de filas sin factor como especificación principal y conservar el ajuste solo como sensibilidad.** Los factores válidos ya están calibrados: sus sumas reproducen los totales oficiales de población ocupada. Inflarlos de nuevo con la tasa de respuesta muestral eleva artificialmente la población ponderada y descansa en una hipótesis de representatividad intra-celda que no está documentada por el INEI. Para transparencia, el reporte final puede mostrar el intervalo entre ambas estimaciones, pero no debe presentar la versión ajustada como estimación central.",
+        "**Usar la versión (a), exclusión de filas sin factor, como especificación principal; presentar (c) como sensibilidad conservadora de totales y no usar (b) como estimación central.** Los factores válidos ya reproducen los totales oficiales. La versión (b) los infla nuevamente. La versión (c) corrige ese problema, pero sigue dependiendo de una imputación no oficial, por lo que no desplaza a (a) como estimación central. Sin embargo, (c) sí contradice la dirección ascendente de la exposición entre 2023 y 2025 observada con (a). En consecuencia, los niveles deben reportarse con (a) como referencia, mientras la tendencia debe presentarse como no robusta y acompañada por el rango (a)-(c).",
     ])
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -372,6 +457,7 @@ def run_analysis(base_path: Path, index_path: Path, output_dir: Path, report_pat
     national, regions = compare_official_figures(base)
     unweighted = compare_unweighted(base)
     sensitivity, cells, totals = sensitivity_indicators(base)
+    trends = indicator_trends(sensitivity)
     output_dir.mkdir(parents=True, exist_ok=True)
     outputs = {
         "comparacion_cifras_oficiales_nacional.csv": national,
@@ -380,6 +466,7 @@ def run_analysis(base_path: Path, index_path: Path, output_dir: Path, report_pat
         "sensibilidad_indicadores.csv": sensitivity,
         "celdas_ajuste_no_respuesta.csv": cells,
         "totales_peso_sensibilidad.csv": totals,
+        "tendencia_indicadores.csv": trends,
     }
     for filename, frame in outputs.items():
         frame.to_csv(output_dir / filename, index=False, encoding="utf-8-sig")
@@ -388,7 +475,7 @@ def run_analysis(base_path: Path, index_path: Path, output_dir: Path, report_pat
         raise RuntimeError("The processed EPEN base changed during the analysis")
     if initial_hash != BASELINE_BASE_SHA256:
         raise RuntimeError(f"Unexpected processed EPEN base hash: {initial_hash}; expected {BASELINE_BASE_SHA256}")
-    write_report(report_path, national, regions, unweighted, sensitivity, cells, totals, initial_hash)
+    write_report(report_path, national, regions, unweighted, sensitivity, cells, totals, trends, initial_hash)
     metadata = {
         "base_path": portable_path(base_path), "base_sha256_before": initial_hash,
         "base_sha256_after": final_hash, "index_path": portable_path(index_path),
@@ -398,6 +485,7 @@ def run_analysis(base_path: Path, index_path: Path, output_dir: Path, report_pat
         "official_reports_available": [2022, 2023, 2024, 2025],
         "official_reports_unavailable": [],
         "uncovered_persons_in_adjustment_cells_2023_2025": int(cells.loc[cells["year"].isin(YEARS_WITH_MISSING), "uncovered_persons"].sum()),
+        "max_abs_version_c_cell_difference": float(cells["version_c_minus_original"].abs().max()),
         "outputs": sorted(outputs), "report": portable_path(report_path),
     }
     (output_dir / "resumen_ejecucion.json").write_text(json.dumps(metadata, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

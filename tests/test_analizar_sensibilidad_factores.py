@@ -46,6 +46,20 @@ class SensitivityFactorTests(unittest.TestCase):
         self.assertTrue(pd.isna(second["adjustment_multiplier"]))
         self.assertEqual(second["uncovered_persons"], 2)
         self.assertEqual(adjusted["adjusted_weight"].sum(), 20.0)
+        first_weights_c = adjusted.loc[
+            adjusted["region_code"].eq("01"), "imputed_calibrated_weight"
+        ].tolist()
+        self.assertEqual(first_weights_c, [5.0, 0.0, 2.5, 2.5])
+        self.assertEqual(first["version_c_weight_sum"], first["original_weight_sum"])
+
+    def test_version_c_preserves_each_real_cell_total(self) -> None:
+        columns = [*MODULE.ADJUSTMENT_KEYS, "weight"]
+        frame = pd.read_csv(BASE, usecols=columns, low_memory=False)
+        _, cells = MODULE.build_adjusted_weights(frame)
+        covered = cells["persons_with_factor"].gt(0)
+        maximum_error = cells.loc[covered, "version_c_minus_original"].abs().max()
+        self.assertLess(maximum_error, 1e-8)
+        self.assertEqual(int(cells.loc[~covered, "uncovered_persons"].sum()), 0)
 
     def test_overlap_difference_recovers_known_contrast(self) -> None:
         frame = pd.DataFrame({

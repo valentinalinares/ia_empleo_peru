@@ -578,6 +578,18 @@ HTML = """<!DOCTYPE html>
       <div id="chart-dept-evol" style="height:360px;"></div>
     </div>
 
+    <div class="note" style="margin-bottom:20px;">
+      <strong>Advertencia de sensibilidad para la tendencia EPEN 2023-2025:</strong>
+      la direccion del cambio no es robusta al tratamiento de las personas sin
+      <code>FAC300_ANUAL</code>. La especificacion principal, que usa solo factores
+      validos, arroja entre 2023 y 2025 +0.0024 en exposicion media y +0.3013 puntos
+      porcentuales en alta exposicion; la imputacion calibrada, que incorpora los
+      casos sin factor conservando los totales oficiales, arroja -0.0015 y -0.0893,
+      respectivamente. Por ello, la tendencia debe presentarse como un rango entre
+      ambas especificaciones, no como una unica trayectoria. Esta limitacion aplica
+      al contraste EPEN y no altera la serie ENAHO 2019-2025 de las secciones 01 y 05.
+    </div>
+
     <!-- Region selector -->
     <div class="section-title" style="font-size:18px;margin-bottom:12px;">Ocupaciones mas expuestas por departamento (2025)</div>
     <div class="region-grid" id="region-selector"></div>

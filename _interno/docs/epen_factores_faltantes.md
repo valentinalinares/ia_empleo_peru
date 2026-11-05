@@ -128,6 +128,50 @@ Todos los ocupados sin factor tienen `RESIDENT=1` y una `LLAVE_PANEL` no vacía.
 Esto descarta que el faltante se explique simplemente por no residencia o por
 ausencia de llave, pero no permite atribuirlo a una ronda o rotación concreta.
 
+## Visitas repetidas del panel dentro del año
+
+Para enlazar hogares sin interpretar la estructura interna de `LLAVE_PANEL`, se
+definió cada visita mediante año, mes, muestra, región, conglomerado, vivienda
+y hogar, todos con sus códigos originales. Luego se usó como identificador
+longitudinal la `LLAVE_PANEL` de la persona marcada como jefe del hogar
+(`C203=1`). Todos los hogares con ocupados tuvieron exactamente un jefe y una
+llave de jefe en cada visita.
+
+El universo continúa siendo el de ocupados. “Personas” cuenta llaves de persona
+únicas; “filas persona” cuenta observaciones mensuales, por lo que una misma
+persona puede aparecer dos veces.
+
+| Año | Hogares con alguna visita sin factor | Con otra visita con factor | Sin otra visita con factor | Personas únicas sin factor | Filas persona sin factor |
+|---:|---:|---:|---:|---:|---:|
+| 2022 | 0 | 0 | 0 | 0 | 0 |
+| 2023 | 617 | 0 | 617 | 1.113 | 1.113 |
+| 2024 | 3.405 | 0 | 3.405 | 6.087 | 7.778 |
+| 2025 | 5.701 | 0 | 5.701 | 10.203 | 14.399 |
+
+No se encontró ningún hogar enlazado que tuviera una visita sin factor y otra
+con factor en el mismo año. Por tanto, en estos datos no hay casos para
+clasificar la visita con factor como primera, última u otra; las tres categorías
+quedan en cero. Esto no prueba una regla general de asignación del factor: solo
+describe los enlaces observables con una misma llave de jefe dentro de cada año.
+Un cambio de jefe puede producir una llave distinta y no se fuerza un enlace
+entre esos casos.
+
+La distribución de visitas anuales fue:
+
+| Año | Estado del hogar | 1 visita | 2 visitas |
+|---:|---|---:|---:|
+| 2022 | Solo con factor | 29.580 | 40.305 |
+| 2023 | Solo con factor | 28.534 | 41.625 |
+| 2023 | Solo sin factor | 617 | 0 |
+| 2024 | Solo con factor | 28.956 | 41.821 |
+| 2024 | Solo sin factor | 2.296 | 1.109 |
+| 2025 | Solo con factor | 29.652 | 42.321 |
+| 2025 | Solo sin factor | 2.867 | 2.834 |
+
+No hubo hogares con más de dos visitas enlazadas en un año ni hogares con una
+mezcla de visitas con y sin factor. Los resultados reproducibles, incluidos los
+ceros de posición, están en `visitas_panel.csv`.
+
 ## Otros factores
 
 La inspección de todas las columnas de los cuatro ZIP encuentra una sola

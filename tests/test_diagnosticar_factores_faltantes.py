@@ -15,6 +15,10 @@ BASE = (
     / "_interno/bases/procesadas/epen_persona_departamentos_anual_2022_2025.csv.gz"
 )
 RAW_ROOT = REPO_ROOT.parent / "data/raw/inei_data_core/epen_departamentos"
+RAW_ZIPS_AVAILABLE = all(
+    len(list((RAW_ROOT / str(year)).glob("*/csv/*-Modulo76.zip"))) == 1
+    for year in (2022, 2023, 2024, 2025)
+)
 
 SPEC = importlib.util.spec_from_file_location("diagnosticar_factores_faltantes", SCRIPT)
 MODULE = importlib.util.module_from_spec(SPEC)
@@ -22,6 +26,11 @@ assert SPEC.loader is not None
 SPEC.loader.exec_module(MODULE)
 
 
+@unittest.skipUnless(
+    RAW_ZIPS_AVAILABLE,
+    "EPEN module 76 ZIPs are not available under ../data/raw/inei_data_core/"
+    "epen_departamentos; skipping local-data integration tests.",
+)
 class MissingFactorDiagnosticTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls) -> None:
@@ -67,6 +76,23 @@ class MissingFactorDiagnosticTests(unittest.TestCase):
         mixed_by_level = mixed.set_index("level")["missing_rows"].to_dict()
         self.assertEqual(mixed_by_level.get("hogar", 0), 0)
         self.assertEqual(mixed_by_level.get("vivienda", 0), 0)
+
+    def test_missing_households_have_no_same_year_visit_with_factor(self) -> None:
+        visits = pd.read_csv(self.output_dir / "visitas_panel.csv")
+        links = visits.loc[visits["section"].eq("enlace_hogares_sin_factor")]
+        linked = links.loc[links["factor_group"].eq("otra_visita_con_factor")]
+        self.assertEqual(linked["households"].sum(), 0)
+        unlinked = links.loc[
+            links["factor_group"].eq("sin_otra_visita_con_factor")
+        ].set_index("year")
+        self.assertEqual(
+            unlinked["households"].to_dict(),
+            {2022: 0, 2023: 617, 2024: 3405, 2025: 5701},
+        )
+        positions = visits.loc[
+            visits["section"].eq("posicion_visita_con_factor")
+        ]
+        self.assertEqual(positions["households"].sum(), 0)
 
 
 if __name__ == "__main__":

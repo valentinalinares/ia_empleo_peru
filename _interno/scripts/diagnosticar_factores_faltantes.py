@@ -59,12 +59,23 @@ RAW_COLUMNS = {
     "SELVIV",
     "HOGAR",
     "C201",
+    "C203",
     "C207",
     "C208",
     "OCUP300",
     "RESIDENT",
     "FAC300_ANUAL",
 }
+
+VISIT_KEY_COLUMNS = [
+    "year",
+    "month",
+    "sample_id",
+    "region_code",
+    "cluster_id",
+    "dwelling_id",
+    "household_id",
+]
 
 
 def sha256(path: Path) -> str:
@@ -190,6 +201,185 @@ def discover_factor_columns(columns: list[str]) -> list[str]:
     ]
 
 
+def build_panel_visit_table(occupied: pd.DataFrame) -> pd.DataFrame:
+    visit_columns = [*VISIT_KEY_COLUMNS, "panel_household_key"]
+    visits = (
+        occupied.groupby(visit_columns, dropna=False)["factor_missing"]
+        .agg(occupied_rows="size", missing_rows="sum")
+        .reset_index()
+    )
+    mixed = visits["missing_rows"].gt(0) & visits["missing_rows"].lt(
+        visits["occupied_rows"]
+    )
+    if mixed.any():
+        raise ValueError(
+            "A household visit mixes occupied people with and without FAC300_ANUAL"
+        )
+    visits["visit_status"] = "con_factor"
+    visits.loc[visits["missing_rows"].eq(visits["occupied_rows"]), "visit_status"] = (
+        "sin_factor"
+    )
+    visits["month_number"] = pd.to_numeric(visits["month"], errors="raise")
+    visits = visits.sort_values(["year", "panel_household_key", "month_number"])
+    panel_keys = ["year", "panel_household_key"]
+    visits["visit_number"] = visits.groupby(panel_keys).cumcount() + 1
+    visits["visits_in_year"] = visits.groupby(panel_keys)["month"].transform("size")
+    visits["factor_visit"] = visits["visit_status"].eq("con_factor")
+    visits["missing_visit"] = visits["visit_status"].eq("sin_factor")
+
+    household_year = (
+        visits.groupby(panel_keys, dropna=False)
+        .agg(
+            visits_in_year=("visits_in_year", "first"),
+            factor_visits=("factor_visit", "sum"),
+            missing_visits=("missing_visit", "sum"),
+            missing_person_rows=("missing_rows", "sum"),
+        )
+        .reset_index()
+    )
+    household_year["has_factor_visit"] = household_year["factor_visits"].gt(0)
+    household_year["has_missing_visit"] = household_year["missing_visits"].gt(0)
+    household_year["factor_pattern"] = "solo_con_factor"
+    household_year.loc[
+        household_year["has_missing_visit"]
+        & ~household_year["has_factor_visit"],
+        "factor_pattern",
+    ] = "solo_sin_factor"
+    household_year.loc[
+        household_year["has_missing_visit"]
+        & household_year["has_factor_visit"],
+        "factor_pattern",
+    ] = "con_y_sin_factor"
+
+    missing_people = (
+        occupied.loc[occupied["factor_missing"]]
+        .groupby(panel_keys, dropna=False)["panel_person_key"]
+        .nunique(dropna=False)
+        .rename("unique_missing_people")
+        .reset_index()
+    )
+    household_year = household_year.merge(
+        missing_people, on=panel_keys, how="left"
+    )
+    household_year["unique_missing_people"] = (
+        household_year["unique_missing_people"].fillna(0).astype(int)
+    )
+
+    link = household_year.loc[household_year["has_missing_visit"]].copy()
+    link["factor_group"] = link["has_factor_visit"].map(
+        {True: "otra_visita_con_factor", False: "sin_otra_visita_con_factor"}
+    )
+    link_summary = (
+        link.groupby(["year", "factor_group"], dropna=False)
+        .agg(
+            households=("panel_household_key", "size"),
+            unique_missing_people=("unique_missing_people", "sum"),
+            missing_person_rows=("missing_person_rows", "sum"),
+        )
+        .reset_index()
+    )
+    expected_link_groups = pd.MultiIndex.from_product(
+        [
+            YEARS,
+            ["otra_visita_con_factor", "sin_otra_visita_con_factor"],
+        ],
+        names=["year", "factor_group"],
+    ).to_frame(index=False)
+    link_summary = expected_link_groups.merge(
+        link_summary, on=["year", "factor_group"], how="left"
+    )
+    for column in ["households", "unique_missing_people", "missing_person_rows"]:
+        link_summary[column] = link_summary[column].fillna(0).astype(int)
+    link_summary["section"] = "enlace_hogares_sin_factor"
+    link_summary["visits_in_year"] = pd.NA
+    link_summary["factor_visit_position"] = pd.NA
+
+    distribution = (
+        household_year.groupby(
+            ["year", "factor_pattern", "visits_in_year"], dropna=False
+        )
+        .agg(
+            households=("panel_household_key", "size"),
+            unique_missing_people=("unique_missing_people", "sum"),
+            missing_person_rows=("missing_person_rows", "sum"),
+        )
+        .reset_index()
+        .rename(columns={"factor_pattern": "factor_group"})
+    )
+    distribution["section"] = "distribucion_visitas"
+    distribution["factor_visit_position"] = pd.NA
+
+    factor_positions = visits.loc[
+        visits["factor_visit"]
+        & visits.set_index(panel_keys).index.isin(
+            household_year.loc[
+                household_year["factor_pattern"].eq("con_y_sin_factor"),
+                panel_keys,
+            ].set_index(panel_keys).index
+        )
+    ].copy()
+    factor_positions["candidate_position"] = "otra"
+    factor_positions.loc[
+        factor_positions["visit_number"].eq(1), "candidate_position"
+    ] = "primera"
+    factor_positions.loc[
+        factor_positions["visit_number"].eq(factor_positions["visits_in_year"]),
+        "candidate_position",
+    ] = "ultima"
+    position_by_household = (
+        factor_positions.groupby(panel_keys, dropna=False)
+        .agg(
+            factor_visit_count=("factor_visit", "size"),
+            factor_visit_position=("candidate_position", "first"),
+        )
+        .reset_index()
+    )
+    position_by_household.loc[
+        position_by_household["factor_visit_count"].gt(1),
+        "factor_visit_position",
+    ] = "varias"
+    position_summary = (
+        position_by_household.groupby(
+            ["year", "factor_visit_position"], dropna=False
+        )
+        .size()
+        .rename("households")
+        .reset_index()
+    )
+    expected_positions = pd.MultiIndex.from_product(
+        [YEARS, ["primera", "ultima", "otra", "varias"]],
+        names=["year", "factor_visit_position"],
+    ).to_frame(index=False)
+    position_summary = expected_positions.merge(
+        position_summary,
+        on=["year", "factor_visit_position"],
+        how="left",
+    )
+    position_summary["households"] = position_summary["households"].fillna(0).astype(
+        int
+    )
+    position_summary["section"] = "posicion_visita_con_factor"
+    position_summary["factor_group"] = "con_y_sin_factor"
+    position_summary["visits_in_year"] = pd.NA
+    position_summary["unique_missing_people"] = 0
+    position_summary["missing_person_rows"] = 0
+
+    columns = [
+        "section",
+        "year",
+        "factor_group",
+        "visits_in_year",
+        "factor_visit_position",
+        "households",
+        "unique_missing_people",
+        "missing_person_rows",
+    ]
+    return pd.concat(
+        [link_summary[columns], distribution[columns], position_summary[columns]],
+        ignore_index=True,
+    )
+
+
 def build_diagnostic(raw_root: Path, processed_base: Path) -> dict[str, pd.DataFrame]:
     processed = pd.read_csv(
         processed_base,
@@ -255,6 +445,26 @@ def build_diagnostic(raw_root: Path, processed_base: Path) -> dict[str, pd.DataF
                 }
             )
 
+        raw_visits = pd.DataFrame(
+            {
+                "year": year,
+                "month": clean_code(raw["MES"]),
+                "sample_id": clean_code(raw["MUESTRA"]),
+                "region_code": clean_code(raw["CCDD"]).str.zfill(2),
+                "cluster_id": raw["CONGLOMERADO"].astype("string"),
+                "dwelling_id": raw["SELVIV"].astype("string"),
+                "household_id": raw["HOGAR"].astype("string"),
+                "relationship_code": clean_code(raw["C203"]),
+                "panel_person_key": clean_value(raw["LLAVE_PANEL"]),
+            },
+            index=raw.index,
+        )
+        heads = (
+            raw_visits.loc[raw_visits["relationship_code"].eq("1")]
+            .groupby(VISIT_KEY_COLUMNS, dropna=False)["panel_person_key"]
+            .agg(head_key_count="nunique", panel_household_key="first")
+            .reset_index()
+        )
         activity_frames.append(
             pd.DataFrame(
                 {
@@ -265,6 +475,18 @@ def build_diagnostic(raw_root: Path, processed_base: Path) -> dict[str, pd.DataF
             )
         )
         occupied = raw.loc[occupied_mask].copy()
+        occupied_visits = raw_visits.loc[occupied.index].merge(
+            heads,
+            on=VISIT_KEY_COLUMNS,
+            how="left",
+            validate="many_to_one",
+        )
+        invalid_heads = occupied_visits["head_key_count"].ne(1)
+        if invalid_heads.any():
+            raise ValueError(
+                f"Expected exactly one household head panel key in every {year} "
+                f"occupied visit; invalid rows: {int(invalid_heads.sum())}"
+            )
         occupied_frame = pd.DataFrame(
             {
                 "year": year,
@@ -274,6 +496,10 @@ def build_diagnostic(raw_root: Path, processed_base: Path) -> dict[str, pd.DataF
                 "strata_code": clean_code(occupied["ESTRATO"]),
                 "area_code": clean_code(occupied["AREA"]),
                 "panel_key_present": clean_value(occupied["LLAVE_PANEL"]).notna(),
+                "panel_person_key": clean_value(occupied["LLAVE_PANEL"]).to_numpy(),
+                "panel_household_key": occupied_visits[
+                    "panel_household_key"
+                ].to_numpy(),
                 "resident_code": clean_code(occupied["RESIDENT"]),
                 "sex_code": clean_code(occupied["C207"]),
                 "age": pd.to_numeric(clean_code(occupied["C208"]), errors="coerce"),
@@ -359,6 +585,7 @@ def build_diagnostic(raw_root: Path, processed_base: Path) -> dict[str, pd.DataF
         ),
         "integridad_unidades.csv": unit_integrity(occupied_all),
         "residencia_panel.csv": residence_panel,
+        "visitas_panel.csv": build_panel_visit_table(occupied_all),
         "variables_factor.csv": pd.DataFrame(factor_rows),
     }
     return tables

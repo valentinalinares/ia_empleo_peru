@@ -1,0 +1,209 @@
+{
+  "input": "enaho_persona_anual_2019_2025.csv.gz",
+  "output": "enaho_persona_anual_2019_2025.csv.gz",
+  "sha256_before": "2e894d55cc627d5e3f019e3fdb237f628c040692a88000732aba08d233d9df41",
+  "sha256_after": "264f37bbb4ee5747225281e90e954f62c280dc60df9567a910c2415777c4e678",
+  "rows": 418427,
+  "row_order_unchanged": true,
+  "other_columns_unchanged": true,
+  "education": {
+    "2019": {
+      "rows": 64954,
+      "non_missing": 64947,
+      "missing": 7
+    },
+    "2020": {
+      "rows": 56615,
+      "non_missing": 56599,
+      "missing": 16
+    },
+    "2021": {
+      "rows": 59935,
+      "non_missing": 59928,
+      "missing": 7
+    },
+    "2022": {
+      "rows": 61181,
+      "non_missing": 61165,
+      "missing": 16
+    },
+    "2023": {
+      "rows": 59447,
+      "non_missing": 59427,
+      "missing": 20
+    },
+    "2024": {
+      "rows": 58579,
+      "non_missing": 58560,
+      "missing": 19
+    },
+    "2025": {
+      "rows": 57716,
+      "non_missing": 57695,
+      "missing": 21
+    }
+  },
+  "sources": {
+    "2019": {
+      "source": "nivel educativo (P301A etiquetado)",
+      "rows": 92094,
+      "non_missing": 92061,
+      "missing": 33,
+      "codes": {
+        "1": 5647,
+        "2": 37,
+        "3": 12716,
+        "4": 11072,
+        "5": 16073,
+        "6": 21580,
+        "7": 3663,
+        "8": 7221,
+        "9": 5853,
+        "10": 6685,
+        "11": 1404,
+        "12": 110
+      },
+      "source_sha256": "9b2bbf85cba2fa5f939f57a3e7f83d5ea84f053c5d72b8a32232aa3e640e9a3a"
+    },
+    "2020": {
+      "source": "nivel educativo (P301A etiquetado)",
+      "rows": 91315,
+      "non_missing": 91268,
+      "missing": 47,
+      "codes": {
+        "1": 4642,
+        "2": 58,
+        "3": 11870,
+        "4": 10447,
+        "5": 16468,
+        "6": 22710,
+        "7": 3794,
+        "8": 7253,
+        "9": 5779,
+        "10": 6930,
+        "11": 1219,
+        "12": 98
+      },
+      "source_sha256": "ad210269a3dd4bed6d83310a291a004ade95bb2e58250b626b93d4932b78121d"
+    },
+    "2021": {
+      "source": "nivel educativo (P301A etiquetado)",
+      "rows": 86806,
+      "non_missing": 86766,
+      "missing": 40,
+      "codes": {
+        "1": 4626,
+        "2": 58,
+        "3": 11499,
+        "4": 9954,
+        "5": 15376,
+        "6": 21989,
+        "7": 3586,
+        "8": 6757,
+        "9": 5279,
+        "10": 6381,
+        "11": 1182,
+        "12": 79
+      },
+      "source_sha256": "8447856066b2607082362842d29749a48e2e6a197a13ed25daf10283b64e4120"
+    },
+    "2022": {
+      "source": "nivel educativo (P301A etiquetado)",
+      "rows": 87661,
+      "non_missing": 87599,
+      "missing": 62,
+      "codes": {
+        "1": 4613,
+        "2": 76,
+        "3": 11070,
+        "4": 9742,
+        "5": 15476,
+        "6": 22721,
+        "7": 3797,
+        "8": 6838,
+        "9": 5264,
+        "10": 6552,
+        "11": 1345,
+        "12": 105
+      },
+      "source_sha256": "20d052713af4e07e6e8660b554c22fdb61aa6e41eea20ff0c6933019b389f138"
+    },
+    "2023": {
+      "source": "nivel educativo (P301A etiquetado)",
+      "rows": 86654,
+      "non_missing": 86585,
+      "missing": 69,
+      "codes": {
+        "1": 4305,
+        "2": 57,
+        "3": 10732,
+        "4": 9577,
+        "5": 15161,
+        "6": 22576,
+        "7": 3991,
+        "8": 6916,
+        "9": 5203,
+        "10": 6674,
+        "11": 1304,
+        "12": 89
+      },
+      "source_sha256": "865427b1fbc07f3bc1ab40f3131378f212334825694bcc1f82f33f12ed41fdb2"
+    },
+    "2024": {
+      "source": "nivel educativo (P301A etiquetado)",
+      "rows": 85992,
+      "non_missing": 85918,
+      "missing": 74,
+      "codes": {
+        "1": 4373,
+        "2": 69,
+        "3": 10306,
+        "4": 9368,
+        "5": 14795,
+        "6": 22332,
+        "7": 4001,
+        "8": 7130,
+        "9": 5217,
+        "10": 6877,
+        "11": 1363,
+        "12": 87
+      },
+      "source_sha256": "f280ab59e45a164e9e2733c87219aa6043068c697523f06309615bfda5d3b523"
+    },
+    "2025": {
+      "source": "nivel educativo (P301A etiquetado)",
+      "rows": 84853,
+      "non_missing": 84784,
+      "missing": 69,
+      "codes": {
+        "1": 4426,
+        "2": 54,
+        "3": 9955,
+        "4": 9218,
+        "5": 14567,
+        "6": 22124,
+        "7": 3735,
+        "8": 7084,
+        "9": 5258,
+        "10": 6870,
+        "11": 1399,
+        "12": 94
+      },
+      "source_sha256": "6278afa27af9a6260c7ef09261a08efb7048fd9666fbc18328869bb33474b061"
+    }
+  },
+  "edu_map": {
+    "1": "sin nivel",
+    "2": "educación inicial",
+    "3": "primaria incompleta",
+    "4": "primaria completa",
+    "5": "secundaria incompleta",
+    "6": "secundaria completa",
+    "7": "superior no universitaria incompleta",
+    "8": "superior no universitaria completa",
+    "9": "superior universitaria incompleta",
+    "10": "superior universitaria completa",
+    "11": "maestría/doctorado",
+    "12": "básica especial"
+  }
+}

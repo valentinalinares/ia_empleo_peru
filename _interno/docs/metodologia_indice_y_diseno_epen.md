@@ -23,9 +23,11 @@ son intercambiables con los utilizados actualmente por este repositorio.
 
 ### Corrida actual del proyecto
 
-Los resultados de este repositorio usan una nueva corrida realizada por
-**Valentina Linares Herrera y Walter Omar Manky Bonilla** con **Claude Sonnet
-4.6 (Anthropic)** sobre las tareas del CNO-2015. Esta versión:
+Los resultados de este repositorio usan una nueva corrida desarrollada por
+**Walter Omar Manky Bonilla**, con la asistencia de investigación de
+**Valentina Linares Herrera**, usando **Claude Sonnet 4.6 (Anthropic)** sobre
+las tareas del CNO-2015. La corrida se realizó en abril de 2026 y su paquete
+metodológico fue versionado el 15 de junio de 2026. Esta versión:
 
 - conserva un score continuo de exposición por tarea y por ocupación;
 - distingue aumento (`A`), sustitución (`S`) e impacto nulo (`N`);
@@ -42,17 +44,20 @@ que usa el pipeline es
 Descripción recomendada para informes:
 
 > Los puntajes utilizados constituyen una nueva corrida de la clasificación de
-> tareas del CNO-2015, realizada por Valentina Linares Herrera y Walter Omar
-> Manky Bonilla con Claude Sonnet 4.6. La corrida actualiza el enfoque
-> desarrollado por Manky (2025), conserva un score continuo y aplica reglas
-> revisadas para empates, ambigüedades y tipo de exposición. En consecuencia,
-> sus valores no son idénticos a los publicados originalmente por el INEI.
+> tareas del CNO-2015, desarrollada por Walter Omar Manky Bonilla, con la
+> asistencia de investigación de Valentina Linares Herrera, usando Claude
+> Sonnet 4.6. La corrida se realizó en abril de 2026 y su paquete metodológico
+> fue versionado el 15 de junio de 2026. Actualiza el enfoque desarrollado por
+> Manky (2025), conserva un score continuo y aplica reglas revisadas para
+> empates, ambigüedades y tipo de exposición. En consecuencia, sus valores no
+> son idénticos a los publicados originalmente por el INEI.
 
 Referencia de la corrida actual como material de trabajo:
 
-> Linares Herrera, V., y Manky Bonilla, W. O. (2026). *Índice de exposición a
-> inteligencia artificial generativa para ocupaciones peruanas: corrida
-> Claude Sonnet 4.6*. Material de trabajo no publicado.
+> Manky Bonilla, W. O. (2026). *Índice de exposición a inteligencia artificial
+> generativa para ocupaciones peruanas: corrida Claude Sonnet 4.6*. Con
+> asistencia de investigación de V. Linares Herrera. Material de trabajo no
+> publicado.
 
 ## Qué publica el INEI sobre el diseño EPEN
 

@@ -268,6 +268,13 @@ def build_year_dataframe(raw_root: Path, year: int) -> pd.DataFrame:
     }
     selected_df = selected_df.rename(columns=column_mapping)
     selected_df = selected_df.replace(r"^\s*$", np.nan, regex=True).replace("", np.nan)
+    # Preserve the original P301A code before applying human-readable labels.
+    # This keeps downstream processed bases reproducible without reversing labels.
+    selected_df["education_code"] = (
+        pd.to_numeric(selected_df["nivel educativo"], errors="coerce")
+        .replace(99, pd.NA)
+        .astype("Int64")
+    )
     selected_df = apply_value_labels(selected_df)
 
     selected_df["rama_div"] = selected_df["rama"].apply(extract_div).astype("Int64")
@@ -285,6 +292,7 @@ def build_year_dataframe(raw_root: Path, year: int) -> pd.DataFrame:
         "formalidad laboral (tamaño empresa)",
         "sexo del trabajador",
         "edad del trabajador",
+        "education_code",
         "nivel educativo",
         "uso de internet en trabajo",
         "frecuencia uso internet",

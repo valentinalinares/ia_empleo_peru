@@ -3,6 +3,10 @@ Estos scripts quedan operativos dentro de `ia_empleo_peru/_interno` y usan rutas
 ## Scripts clave
 
 - `build_enaho_complete_multiyear.py`: arma `ENAHO_complete_YYYY.csv` a partir de las bases crudas ubicadas en `_interno/bases/originales/enaho/`.
+- `build_enaho_persona_education.py`: reconstruye `education_code` en la base
+  procesada ENAHO desde `P301A`, preservado como codigo o etiqueta en las bases
+  completas. Antes de escribir verifica que las filas y las otras columnas no
+  cambien, y genera un manifiesto de auditoria.
 - `build_enaho_exposure_notebook.py`: genera el notebook anual final alineado con el HTML maestro y exporta tablas auxiliares por ano.
 - `generate_enaho_exposure_year_reports.py`: genera notebooks y reportes anuales por ano.
 - `generar_reporte_html.py`: reconstruye `reporte_ia_empleo_peru_2019_2025.html` usando solo insumos dentro de esta carpeta.
@@ -29,7 +33,9 @@ Ejecutar desde la carpeta `ia_empleo_peru`:
 
 ```text
 python _interno/scripts/build_epen_persona_departamentos.py
+python _interno/scripts/build_enaho_persona_education.py
 python -m unittest tests/test_build_epen_persona_departamentos.py
+python -m unittest tests/test_build_enaho_persona_education.py
 python _interno/scripts/analizar_sensibilidad_factores.py
 python -m unittest tests/test_analizar_sensibilidad_factores.py
 ```

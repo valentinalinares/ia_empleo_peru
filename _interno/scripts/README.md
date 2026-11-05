@@ -44,6 +44,10 @@ El mapeo auditado de identificadores EPEN, sus fuentes por año y las
 limitaciones de `ubigeo`, dominio y `MUESTRA` están documentados en
 `_interno/docs/epen_departamentos_identificadores.md`.
 
+La autoría y procedencia del índice Sonnet, su relación con Manky (2025), y la
+documentación pública y limitaciones del diseño muestral EPEN se explican en
+`_interno/docs/metodologia_indice_y_diseno_epen.md`.
+
 ## Nota
 
 Para rerun del bundle hacen falta:

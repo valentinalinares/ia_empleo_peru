@@ -1907,8 +1907,9 @@ def build_enaho_exposure_notebook(
             "## Alcance\n\n"
             f"- Año analizado: **{analysis_year}**\n"
             "- Base laboral: **ENAHO anual, ocupados**\n"
-            "- Índice: **Claude Sonnet 4-6 / abril 2026**\n"
+            "- Índice: **Walter Omar Manky Bonilla (autor), con asistencia de investigación de Valentina Linares Herrera / Claude Sonnet 4-6 / corrida de abril de 2026; paquete metodológico versionado el 15 de junio de 2026**\n"
             "- Clasificación ocupacional: **CNO-2015 a 4 dígitos**\n"
+            "- Esta corrida actualiza el enfoque publicado por Manky (2025), conserva un score continuo y aplica reglas revisadas para empates, ambigüedades y tipo de exposición; sus valores no son los puntajes publicados originalmente por el INEI.\n"
             "- Este cuaderno está pensado como versión final reproducible del corte anual, alineada con el HTML maestro."
         ),
         code(setup_source),

@@ -10,6 +10,11 @@ Estos scripts quedan operativos dentro de `ia_empleo_peru/_interno` y usan rutas
   ocupadas EPEN 2022-2025 desde los ZIP oficiales del modulo 76. Conserva el
   codigo original y genera `occupation_code_4d` completando ceros a la
   izquierda. Escribe tambien un manifiesto con huellas SHA-256 y conteos.
+- `analizar_sensibilidad_factores.py`: contrasta la suma de los factores EPEN
+  con las cifras oficiales, compara casos con y sin factor dentro de celdas
+  homogéneas y calcula la sensibilidad a un ajuste por falta de respuesta. La
+  base procesada se abre solo para lectura y su SHA-256 se verifica antes y
+  después.
 
 Requiere Python 3.10 o superior (usa `zip(..., strict=True)`) y las
 dependencias de `requirements.txt`. Por defecto busca los ZIP en
@@ -22,6 +27,8 @@ Ejecutar desde la carpeta `ia_empleo_peru`:
 ```text
 python _interno/scripts/build_epen_persona_departamentos.py
 python -m unittest tests/test_build_epen_persona_departamentos.py
+python _interno/scripts/analizar_sensibilidad_factores.py
+python -m unittest tests/test_analizar_sensibilidad_factores.py
 ```
 
 El mapeo auditado de identificadores EPEN, sus fuentes por año y las
